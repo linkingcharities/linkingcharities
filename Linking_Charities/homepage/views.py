@@ -9,3 +9,7 @@ def index(request):
 def login(request):
   template = loader.get_template('homepage/login.html')
   return HttpResponse(template.render([], request))
+
+def signup(request):
+  template = loader.get_template('homepage/signup.html')
+  return HttpResponse(template.render([], request))
