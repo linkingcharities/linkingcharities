@@ -84,8 +84,6 @@ DATABASES = {
         'NAME': 'charity',
         'USER' : 'jq',
         'PASSWORD' : '',
-        'HOST' : 'localhost',
-        'PORT' : '',
     }
 }
 
