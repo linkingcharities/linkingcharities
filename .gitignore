@@ -91,3 +91,6 @@ ENV/
 
 # Database
 db.sqlite3
+
+# IDE
+.idea/
