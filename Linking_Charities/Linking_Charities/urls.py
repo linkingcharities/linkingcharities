@@ -6,5 +6,5 @@ from account.views import ListCreateAccount
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/charities', ListCreateCharities.as_view(), name='list_charities'),
-    url(r'^api/account', ListCreateAccount.as_view(), name='list_account')
+    url(r'^api/account', include("account.api.urls"), name='user_accounts')
 ]
