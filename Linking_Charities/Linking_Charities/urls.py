@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from testapp.views import ListCreateCharities
+from charity.views import ListCreateCharities
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
