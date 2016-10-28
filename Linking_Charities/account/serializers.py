@@ -51,7 +51,6 @@ class DonorAccountLoginSerializer(serializers.ModelSerializer):
         fields = [
             'username',
             'password',
-            'token',
         ]
         extra_kwargs = {"password": {"write_only": True} }
     
@@ -75,8 +74,6 @@ class DonorAccountLoginSerializer(serializers.ModelSerializer):
            if not account.check_password(password):
                raise ValidationError("Incorrect password.")
 
-        data["token"] = "need to generate token"
- 
         return data
 
 class CharityAccountLoginSerializer(serializers.ModelSerializer):
@@ -87,7 +84,6 @@ class CharityAccountLoginSerializer(serializers.ModelSerializer):
         fields = [
             'username',
             'password',
-            'token',
         ]
         extra_kwargs = {"password": {"write_only": True} }
     
@@ -109,7 +105,5 @@ class CharityAccountLoginSerializer(serializers.ModelSerializer):
         if account:
             if not account.check_password(password):
                 raise ValidationError("Incorrect password.")
-
-        data["token"] = "need to generate token"
 
         return data
