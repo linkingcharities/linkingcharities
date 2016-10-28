@@ -2,3 +2,4 @@ Django==1.10.2
 Django-Extensions==1.7.4
 djangorestframework==3.4.7
 django-cors-headers==1.2.2
+django-paypal==0.3.3
