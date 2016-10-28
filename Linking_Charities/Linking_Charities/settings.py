@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
+    'paypal.standard.ipn',
     'charity',
     'account',
+    'paypal_serializer',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +143,5 @@ STATICFILES_DIR = (
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+PAYPAL_TEST = True
