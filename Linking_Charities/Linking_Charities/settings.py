@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Paypal Sandbox Mode
+PAYPAL_TEST = True
 
 # Application definition
 
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'charity',
     'account',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
