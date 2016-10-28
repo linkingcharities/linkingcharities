@@ -44,7 +44,6 @@ class CharityAccountSerializer(serializers.ModelSerializer):
         return charityAccount 
 
 class DonorAccountLoginSerializer(serializers.ModelSerializer):
-    token = CharField(allow_blank=True, read_only=True)
     username = CharField(required=True)
     class Meta:
         model = User
@@ -77,7 +76,6 @@ class DonorAccountLoginSerializer(serializers.ModelSerializer):
         return data
 
 class CharityAccountLoginSerializer(serializers.ModelSerializer):
-    token = CharField(allow_blank=True, read_only=True)
     username = CharField(required=True)
     class Meta:
         model = User

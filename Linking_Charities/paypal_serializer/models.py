@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 from django.db import models
 
 class PaypalPayment(models.Model):
-    business = models.CharField(max_length=100, default="DAFAULT")
+    username = models.CharField(max_length=100, default="DEFAULT")
+    business = models.CharField(max_length=100, default="DEFAULT")
     amount = models.IntegerField(default=0, null=True)
     item_name = models.CharField(max_length=100, default="DEFAULT")
     invoice = models.IntegerField(default=0, null=True)
