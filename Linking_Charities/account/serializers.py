@@ -1,9 +1,11 @@
 from rest_framework import serializers
+from rest_framework.serializers import *
 from account.models import ( 
     DonorAccount,
     CharityAccount,
 )
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,3 +42,74 @@ class CharityAccountSerializer(serializers.ModelSerializer):
         account = User.objects.create_user(**user_data)
         charityAccount = CharityAccount.objects.create(account = account, **validated_data)
         return charityAccount 
+
+class DonorAccountLoginSerializer(serializers.ModelSerializer):
+    token = CharField(allow_blank=True, read_only=True)
+    username = CharField(required=True)
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'password',
+            'token',
+        ]
+        extra_kwargs = {"password": {"write_only": True} }
+    
+    def validate(self, data):
+        username = data.get("username", None)
+        password = data.get("password")
+        if not username:
+            raise ValidationError("Username is required.")
+
+        user = User.objects.filter(
+            Q(username=username)
+        ).distinct()
+        donor_account = DonorAccount.objects.filter( Q(account=user) ).distinct()
+        account = None
+        if user.exists() and donor_account.exists():
+            account = user.first()
+        else:
+            raise ValidationError("Username is not valid.")
+
+        if account:
+           if not account.check_password(password):
+               raise ValidationError("Incorrect password.")
+
+        data["token"] = "need to generate token"
+ 
+        return data
+
+class CharityAccountLoginSerializer(serializers.ModelSerializer):
+    token = CharField(allow_blank=True, read_only=True)
+    username = CharField(required=True)
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'password',
+            'token',
+        ]
+        extra_kwargs = {"password": {"write_only": True} }
+    
+    def validate(self, data):
+        username = data.get("username", None)
+        password = data.get("password")
+        if not username:
+            raise ValidationError("Username is required.")
+        user = User.objects.filter(
+            Q(username=username)
+        ).distinct()
+        charity_accounts = CharityAccount.objects.filter( Q(account=user) )
+        account = None
+        if user.exists() and charity_accounts.exists():
+            account = user.first()
+        else:
+            raise ValidationError("Username is invalid.")
+        
+        if account:
+            if not account.check_password(password):
+                raise ValidationError("Incorrect password.")
+
+        data["token"] = "need to generate token"
+
+        return data
