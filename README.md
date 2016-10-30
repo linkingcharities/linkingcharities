@@ -26,3 +26,8 @@ pip freeze > requirements.txt
 
 To do
 
+## Backend deployment
+1. SSH into the server
+2. Go to /var/www/linkingcharities, pull latest version and install any new requirements
+3. Run ```systemctl restart linkingcharities.service``` to perform migrations and restart the backend server
+
