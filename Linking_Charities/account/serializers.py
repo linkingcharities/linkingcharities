@@ -32,10 +32,10 @@ class DonorAccountSerializer(serializers.ModelSerializer):
 
 class CharityAccountSerializer(serializers.ModelSerializer):
     account = UserSerializer()
-   
+    paypal = CharField(required=True)
     class Meta:
         model = CharityAccount
-        fields = [ 'account', 'paypal','isCharity', 'description' ]
+        fields = [ 'account', 'paypal', 'description' ]
     
     def create(self, validated_data):
         user_data = validated_data.pop('account')

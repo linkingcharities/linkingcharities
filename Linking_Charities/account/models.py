@@ -19,5 +19,4 @@ class DonorAccount(models.Model):
 class CharityAccount(models.Model):
     account = models.OneToOneField(User)
     paypal = models.CharField(max_length=100, default="DEFAULT")
-    isCharity = models.BooleanField(default=True)
     description = models.TextField(max_length=1000, default="DEFAULT")
