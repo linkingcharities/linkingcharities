@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import *
 from .models import PaypalPayment
+from django.contrib.auth.models import User
 
 class PaypalPaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,4 +20,13 @@ class PaypalPaymentSerializer(serializers.ModelSerializer):
         payment = PaypayPayment.objects.create(**validated_data)
         return payment
 
-
+class PaypalViewPaymentSerializer(serializers.ModelSerializer):
+    username = CharField(required=True)
+    class Meta:
+        model=User
+        fields = [
+            'username',
+        ]
+    
+    def validate(self, data):
+        return data

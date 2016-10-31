@@ -29,10 +29,12 @@ from .serializers import *
 
 
 class DonorAccountCreateAPIView(CreateAPIView):
+    permission_classes = [AllowAny]
     serializer_class = DonorAccountSerializer
     queryset = DonorAccount.objects.all()
     
 class CharityAccountCreateAPIView(CreateAPIView):
+    permission_classes = [AllowAny]
     serializer_class = CharityAccountSerializer
     queryset = DonorAccount.objects.all()
 

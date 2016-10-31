@@ -8,12 +8,12 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 
 class PaypalMakePaymentAPIView(CreateAPIView):
-    serializer_class = None
+    serializer_class = PaypalViewPaymentSerializer
     queryset = PaypalPayment.objects.all()
 
 class PaypalShowPaymentAPIView(APIView):
     permission_classes = [AllowAny]
-    serializer_class = None
+    serializer_class = PaypalPaymentSerializer
  
     def post(self, request, *args, **kwargs):
         return None
