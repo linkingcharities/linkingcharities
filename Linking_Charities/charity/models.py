@@ -35,7 +35,6 @@ class Charity(models.Model):
     )
     name = models.CharField(max_length=100, default='DEFAULT')
     type = models.CharField(max_length=2, choices=CHARITY_PURPOSE)
-    paypal = models.EmailField(default="hello@example.com")
     register_id = models.IntegerField(default=0,)
     area_served = models.CharField(max_length=100, default='DEFAULT')  # needs to resolve list issues
     total_income = models.IntegerField(default=0)
@@ -44,4 +43,4 @@ class Charity(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.register_id
+        return self.name
