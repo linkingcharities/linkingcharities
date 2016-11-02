@@ -5,6 +5,7 @@ from django.db import models
 
 class Charity(models.Model):
     CHARITY_TARGETS = (
+        ('', 'Default'),
         ('C', 'Children/Young People'),
         ('E', 'Elderly/Old People'),
         ('D', 'People with disabilities'),
@@ -13,6 +14,7 @@ class Charity(models.Model):
         ('O', 'Other')
     )
     CHARITY_PURPOSE = (
+        ('','Default'),
         ('G', 'General Charitable Purposes'),
         ('E', 'Education/Training'),
         ('H', 'Advancement of Health/Saving Lives'),
@@ -33,7 +35,8 @@ class Charity(models.Model):
     )
     name = models.CharField(max_length=100, default='DEFAULT')
     type = models.CharField(max_length=2, choices=CHARITY_PURPOSE)
-    register_id = models.IntegerField(default=0)
+    paypal = models.EmailField(default="hello@example.com")
+    register_id = models.IntegerField(default=0,)
     area_served = models.CharField(max_length=100, default='DEFAULT')  # needs to resolve list issues
     total_income = models.IntegerField(default=0)
     target = models.CharField(max_length=1, choices=CHARITY_TARGETS)
@@ -41,4 +44,4 @@ class Charity(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.name
+        return self.register_id
