@@ -6,6 +6,7 @@ from account.models import (
 )
 from django.contrib.auth.models import User
 from django.db.models import Q
+from rest_framework.authtoken.models import Token
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -77,11 +78,13 @@ class DonorAccountLoginSerializer(serializers.ModelSerializer):
 
 class CharityAccountLoginSerializer(serializers.ModelSerializer):
     username = CharField(required=True)
+    token = CharField(allow_blank=True, read_only=True)
     class Meta:
         model = User
         fields = [
             'username',
             'password',
+            'token',
         ]
         extra_kwargs = {"password": {"write_only": True} }
     
@@ -103,5 +106,9 @@ class CharityAccountLoginSerializer(serializers.ModelSerializer):
         if account:
             if not account.check_password(password):
                 raise ValidationError("Incorrect password.")
+ 
+        token = Token.objects.get(user=user.first())
 
+        data["token"] = token
+ 
         return data
