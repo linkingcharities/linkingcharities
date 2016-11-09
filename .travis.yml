@@ -4,7 +4,8 @@ python:
 
 install: "pip install -r requirements.txt"
 
-script: make test
+script:
+  - ./Linking_Charities/tests/tests
 
 notifications:
   email: false
