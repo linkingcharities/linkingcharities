@@ -21,6 +21,8 @@ class AccountTestCase(TestCase):
                 "test@hotmail.com")
         except Exception:
             self.fail("Error, donor account creation failed.")
+        
+        print("Donor Account Creation passed.")
  
 class SerializerTestCase(APITestCase):
 
@@ -35,4 +37,4 @@ class SerializerTestCase(APITestCase):
             User.objects.get(username="test_serializer")
         except Exception:
             self.fail("Error, serializer cannot create Donor Account.")
-        print "Donor account serializer passed."
+        print("Donor account serializer passed.")
