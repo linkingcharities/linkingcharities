@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'paypal.standard.ipn',
     'charity',
     'account',
-    'paypal_serializer',
+    'payment',
 ]
 
 MIDDLEWARE = [
