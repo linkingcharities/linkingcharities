@@ -82,7 +82,9 @@ class SerializerAuthenticationTestCase(APITestCase):
  
     def testDonorAccountAuthenticationWrongPasswordFails(self):
         donorLoginData = { 'username': 'auth_test', 'password': '111'}
-        response = self.client.post('/api/donor/login', donorLoginData, format='json')
+        response = self.client.post('/api/donor/login'
+                                    , donorLoginData
+                                    , format='json')
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST) 
         returnData = json.loads(response.content.decode())['non_field_errors']
         self.assertEqual(returnData[0], 'Incorrect password.')
@@ -91,7 +93,9 @@ class SerializerAuthenticationTestCase(APITestCase):
 
     def testDonorAccountAuthenticationInvalidUsername(self):
         donorLoginData = { 'username': 'invalid', 'password': '1234' }
-        response = self.client.post('/api/donor/login', donorLoginData, format='json')
+        response = self.client.post('/api/donor/login'
+                                    , donorLoginData
+                                    , format='json')
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
         returnData = json.loads(response.content.decode())['non_field_errors']
         self.assertEquals(returnData[0], 'Username is not valid.')
