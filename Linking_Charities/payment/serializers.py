@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.core import serializers as to_json
 from rest_framework.serializers import *
 from .models import Payment
 from django.contrib.auth.models import User
@@ -18,21 +19,13 @@ class MakePaymentSerializer(serializers.ModelSerializer):
         return payment
 
 class ShowPaymentSerializer(serializers.ModelSerializer):
-    username = CharField(required=True)
-    payments = CharField(allow_blank=True, read_only=True)
-
     class Meta:
         model = Payment
         fields = [
             'username',
-            'payments',
+            'charity',
+            'date',
+            'amount',
+            'currency',
         ]
     
-    def validate(self, data):
-        username = data.get("username", None)
-        if not username:
-            raise ValidationError("Username is required.")
-        payments = Payment.objects.filter(username=username)
-        data['payments'] = payments
-  
-        return data

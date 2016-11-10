@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from rest_framework.generics import CreateAPIView
 from .serializers import *
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.status import *
@@ -12,14 +13,16 @@ class MakePaymentAPIView(CreateAPIView):
     serializer_class = MakePaymentSerializer
     queryset = Payment.objects.all()
 
-class ShowPaymentAPIView(CreateAPIView):
+class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = ShowPaymentSerializer
+    http_method_names = ['get', 'head']
  
-    def post(self, request, *args, **kwargs):
-        data = request.data
-        serializer = ShowPaymentSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            new_data = serializer.data
-            return Response(new_data, status=HTTP_200_OK)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        queryset = Payment.objects.all()
+        user = self.request.query_params.get('username', None)
+        
+        if user is not None:
+            queryset = queryset.filter(username=user)
+            return queryset
+        return Payment.objects.none()
