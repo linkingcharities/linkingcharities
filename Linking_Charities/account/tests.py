@@ -2,7 +2,9 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from account.models import *
+import json
 
 # Create your tests here.
 
@@ -55,3 +57,72 @@ class SerializerTestCase(APITestCase):
         except Exception:
             self.fail("Error, serializer cannot create Charity Account.")
         print("Charity account serializer passed.")
+
+class SerializerAuthenticationTestCase(APITestCase):
+     
+    def setUp(self):
+        self.donorData = { 'account' : { 'username': 'auth_test', 'password': '1234'} }
+        self.client.post('/api/donor/register', self.donorData, format='json')
+        self.charityData = { 'account' : { 'username': 'auth_charity', 'password': '1234' } }
+        self.charityData['description'] = 'auth testing description'
+        self.charityData['paypal'] = 'auth testing paypal'
+        self.client.post('/api/charity/register', self.charityData, format='json')
+         
+    def testDonorAccountAuthentication(self):
+        donorLoginData = { 'username': 'auth_test', 'password': '1234' }
+        response = self.client.post('/api/donor/login', donorLoginData, format='json')
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+        auth_key = json.loads(response.content)['token']
+        user = User.objects.get(username=donorLoginData['username'])
+        token = Token.objects.get(user=user)
+        self.assertEquals(auth_key, token.key)
+
+        print("Donor account authentication passed.")
+ 
+    def testDonorAccountAuthenticationWrongPasswordFails(self):
+        donorLoginData = { 'username': 'auth_test', 'password': '111'}
+        response = self.client.post('/api/donor/login', donorLoginData, format='json')
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST) 
+        returnData = json.loads(response.content)['non_field_errors']
+        self.assertEqual(returnData[0], 'Incorrect password.')
+        
+        print("Donor account wrong password authentication passed.")
+
+    def testDonorAccountAuthenticationInvalidUsername(self):
+        donorLoginData = { 'username': 'invalid', 'password': '1234' }
+        response = self.client.post('/api/donor/login', donorLoginData, format='json')
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        returnData = json.loads(response.content)['non_field_errors']
+        self.assertEquals(returnData[0], 'Username is not valid.')
+
+        print("Donor account invalid username authentication passed.")
+
+    def testCharityAccountAuthentication(self):
+        charityLoginData = { 'username': 'auth_charity', 'password': '1234' }
+        response = self.client.post('/api/charity/login', charityLoginData, format='json')
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        auth_key = json.loads(response.content)['token']
+        user = User.objects.get(username=charityLoginData['username'])
+        token = Token.objects.get(user=user)
+        self.assertEquals(auth_key, token.key)
+ 
+        print("Charity account authentication passed.")  
+
+    def testCharityAccountAuthenticationWrongPasswordFails(self):
+        charityLoginData = { 'username': 'auth_charity', 'password': '111'}
+        response = self.client.post('/api/charity/login', charityLoginData, format='json')
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        returnData = json.loads(response.content)['non_field_errors']
+        self.assertEqual(returnData[0], 'Incorrect password.')
+
+        print("Charity account wrong password authentication passed.")
+
+    def testCharityAccountAuthenticationInvalidUsername(self):
+        charityLoginData = { 'username': 'invalid', 'password': '1234' }
+        response = self.client.post('/api/charity/login', charityLoginData, format='json')
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
+        returnData = json.loads(response.content)['non_field_errors']
+        self.assertEquals(returnData[0], 'Username is not valid.')
+
+        print("Charity account invalid username authentication passed.") 

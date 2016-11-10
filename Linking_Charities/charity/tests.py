@@ -25,4 +25,4 @@ class  CharityTestCase(TestCase):
         except Exception:
             self.fail("Charity \"testing2\" could not be created.")
         self.assertEqual(len(queryset), 2)
-        print("Get all Charity test passed.")
+        print("Get all Charity passed.")
