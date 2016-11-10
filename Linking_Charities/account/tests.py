@@ -73,7 +73,7 @@ class SerializerAuthenticationTestCase(APITestCase):
         response = self.client.post('/api/donor/login', donorLoginData, format='json')
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
-        auth_key = json.loads(response.content)['token']
+        auth_key = json.loads(response.content.decode())['token']
         user = User.objects.get(username=donorLoginData['username'])
         token = Token.objects.get(user=user)
         self.assertEquals(auth_key, token.key)
@@ -84,7 +84,7 @@ class SerializerAuthenticationTestCase(APITestCase):
         donorLoginData = { 'username': 'auth_test', 'password': '111'}
         response = self.client.post('/api/donor/login', donorLoginData, format='json')
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST) 
-        returnData = json.loads(response.content)['non_field_errors']
+        returnData = json.loads(response.content.decode())['non_field_errors']
         self.assertEqual(returnData[0], 'Incorrect password.')
         
         print("Donor account wrong password authentication passed.")
@@ -93,7 +93,7 @@ class SerializerAuthenticationTestCase(APITestCase):
         donorLoginData = { 'username': 'invalid', 'password': '1234' }
         response = self.client.post('/api/donor/login', donorLoginData, format='json')
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-        returnData = json.loads(response.content)['non_field_errors']
+        returnData = json.loads(response.content.decode())['non_field_errors']
         self.assertEquals(returnData[0], 'Username is not valid.')
 
         print("Donor account invalid username authentication passed.")
@@ -102,7 +102,7 @@ class SerializerAuthenticationTestCase(APITestCase):
         charityLoginData = { 'username': 'auth_charity', 'password': '1234' }
         response = self.client.post('/api/charity/login', charityLoginData, format='json')
         self.assertEquals(response.status_code, status.HTTP_200_OK)
-        auth_key = json.loads(response.content)['token']
+        auth_key = json.loads(response.content.decode())['token']
         user = User.objects.get(username=charityLoginData['username'])
         token = Token.objects.get(user=user)
         self.assertEquals(auth_key, token.key)
@@ -113,7 +113,7 @@ class SerializerAuthenticationTestCase(APITestCase):
         charityLoginData = { 'username': 'auth_charity', 'password': '111'}
         response = self.client.post('/api/charity/login', charityLoginData, format='json')
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-        returnData = json.loads(response.content)['non_field_errors']
+        returnData = json.loads(response.content.decode())['non_field_errors']
         self.assertEqual(returnData[0], 'Incorrect password.')
 
         print("Charity account wrong password authentication passed.")
@@ -122,7 +122,7 @@ class SerializerAuthenticationTestCase(APITestCase):
         charityLoginData = { 'username': 'invalid', 'password': '1234' }
         response = self.client.post('/api/charity/login', charityLoginData, format='json')
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-        returnData = json.loads(response.content)['non_field_errors']
+        returnData = json.loads(response.content.decode())['non_field_errors']
         self.assertEquals(returnData[0], 'Username is not valid.')
 
         print("Charity account invalid username authentication passed.") 
