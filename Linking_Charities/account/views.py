@@ -36,7 +36,7 @@ class DonorAccountCreateAPIView(CreateAPIView):
 class CharityAccountCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = CharityAccountSerializer
-    queryset = DonorAccount.objects.all()
+    queryset = CharityAccount.objects.all()
 
 class DonorAccountLoginAPIView(APIView):
     permission_classes = [AllowAny]
