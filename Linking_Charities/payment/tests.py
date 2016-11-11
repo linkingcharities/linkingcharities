@@ -48,3 +48,23 @@ class PaymentTestCase(TestCase):
         self.assertEquals(len(returnData),2)
 
         print("Get payment API multiple payments passed.")
+
+    def testMakePaymentAPICanProduceRecord(self):
+        data = { 'username': 'make_payment'
+               , 'charity': 'charilink@gmail.com'
+               , 'currency': 'USD'
+               , 'amount': '12' }
+        
+        request = self.client.post('/api/make_payment', data, format='json')
+        
+        checkRequest = self.client.get('/api/show_payment'
+                                      , {'username': 'make_payment'}
+                                      , format='json')
+        returnData = json.loads(checkRequest.content.decode())
+        self.assertEquals(len(returnData), 1)
+        entry = returnData[0]
+        self.assertEquals(entry['charity'], 'charilink@gmail.com')
+        self.assertEquals(entry['currency'], 'USD')
+        self.assertEquals(entry['amount'], 12)
+
+        print("Make payment API passed.")
