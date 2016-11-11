@@ -21,3 +21,4 @@ class CharityAccount(models.Model):
     account = models.OneToOneField(User)
     paypal = models.CharField(max_length=100, default="DEFAULT")
     description = models.TextField(max_length=1000, default="DEFAULT")
+    charity = models.ForeignKey(Charity, null=True, blank=True, default=None)
