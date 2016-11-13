@@ -4,9 +4,8 @@ from charity.views import ListCreateCharities
 from payment.views import *
 from account.views import (
     DonorAccountCreateAPIView,
-    DonorAccountLoginAPIView,
     CharityAccountCreateAPIView,
-    CharityAccountLoginAPIView,
+    AccountLoginAPIView,
 )
 from payment.views import (
     MakePaymentAPIView,
@@ -18,9 +17,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/charities', ListCreateCharities.as_view(), name='list_charities'),
     url(r'^api/donor/register', DonorAccountCreateAPIView.as_view(), name='donor_accounts_create'),
-    url(r'^api/donor/login', DonorAccountLoginAPIView.as_view(), name='donor_login'),
+    url(r'^api/login', AccountLoginAPIView.as_view(), name='login'),
     url(r'^api/charity/register', CharityAccountCreateAPIView.as_view(), name='charity_accounts_create'),
-    url(r'^api/charity/login', CharityAccountLoginAPIView.as_view(), name='charity_login'),
     url(r'^api/auth_token', views.obtain_auth_token, name='auth token api'),
     url(r'^api/show_payment', ShowPaymentAPIView.as_view(), name='see_payment'),
     url(r'^api/make_payment', MakePaymentAPIView.as_view(), name='make_payment'),
