@@ -19,7 +19,6 @@ CHARITY_PURPOSE = (
     ('D', 'Disability'),
     ('P', 'Prevention or Relief of Poverty'),
     ('O', 'Overseas Aid/Famine Relief'),
-    ('H', 'Accommodation/Housing'),
     ('R', 'Religious Activities'),
     ('C', 'Arts/Culture/Heritage/Science'),
     ('S', 'Amateur Sport'),
