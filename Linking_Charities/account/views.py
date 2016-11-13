@@ -38,26 +38,15 @@ class CharityAccountCreateAPIView(CreateAPIView):
     serializer_class = CharityAccountSerializer
     queryset = CharityAccount.objects.all()
 
-class DonorAccountLoginAPIView(APIView):
+class AccountLoginAPIView(APIView):
     permission_classes = [AllowAny]
-    serializer_class = DonorAccountLoginSerializer
+    serializer_class = AccountLoginSerializer
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        serializer = DonorAccountLoginSerializer(data=data)
+        serializer = AccountLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             new_data = serializer.data
             return Response(new_data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-class CharityAccountLoginAPIView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = CharityAccountLoginSerializer
-    
-    def post(self, request, *args, **kwargs):
-        data = request.data
-        serializer = CharityAccountLoginSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            new_data = serializer.data
-            return Response(new_data, status=HTTP_200_OK)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
