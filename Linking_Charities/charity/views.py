@@ -11,7 +11,7 @@ class IncomeFilter(django_filters.rest_framework.FilterSet):
     max_income = django_filters.NumberFilter(name="total_income", lookup_expr='lte')
     class Meta:
         model = Charity
-        fields = ('name', 'type', 'min_income', 'max_income')
+        fields = ('id','name', 'target', 'type', 'min_income', 'max_income')
 
 class ListCreateCharities(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
@@ -19,5 +19,4 @@ class ListCreateCharities(generics.ListCreateAPIView):
     serializer_class = CharitySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,filters.SearchFilter,)
     filter_fields = '__all__'
-    search_fields = ('name',)
     filter_class = IncomeFilter
