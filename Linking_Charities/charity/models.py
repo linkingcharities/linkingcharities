@@ -28,6 +28,7 @@ CHARITY_PURPOSE = (
     ('A', 'Armed Forces'),
     ('HR', 'Human Rights/Equality'),
     ('RE', 'Recreation'),
+    ('AH', 'Accommodation/Housing'),
     ('OT', 'Other')
 )
 
