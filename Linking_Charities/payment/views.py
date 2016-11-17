@@ -7,11 +7,15 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.status import *
 from rest_framework.response import Response
+from django.http import HttpResponseRedirect
 
 class MakePaymentAPIView(CreateAPIView):
     permission_classes = [AllowAny] 
     serializer_class = MakePaymentSerializer
     queryset = Payment.objects.all()
+    
+    def post(self, request, format=None):
+      return HttpResponseRedirect('http://0.0.0.0:8080/thank-you?business=ming&amount=1')
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
