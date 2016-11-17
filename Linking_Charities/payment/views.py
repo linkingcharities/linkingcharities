@@ -14,8 +14,6 @@ class MakePaymentAPIView(CreateAPIView):
     serializer_class = MakePaymentSerializer
     queryset = Payment.objects.all()
     
-    def post(self, request, format=None):
-      return HttpResponseRedirect('http://0.0.0.0:8080/thank-you?business=ming&amount=1')
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
