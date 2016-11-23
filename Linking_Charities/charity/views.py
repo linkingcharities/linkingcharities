@@ -1,10 +1,18 @@
 from django.shortcuts import render
 from rest_framework import generics
 from charity.models import Charity
-from charity.serializers import CharitySerializer
+from charity.serializers import CharitySerializer, CharityCreateSerializer
 from rest_framework.permissions import AllowAny
 import django_filters
 from rest_framework import filters
+from rest_framework.response import Response
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_400_BAD_REQUEST,
+)
+from django.contrib.auth.models import User
+from django.db.models import Q
+from account.models import *
 
 class IncomeFilter(django_filters.rest_framework.FilterSet):
     min_income = django_filters.NumberFilter(name="total_income", lookup_expr='gte')
@@ -20,3 +28,28 @@ class ListCreateCharities(generics.ListCreateAPIView):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,filters.SearchFilter,)
     filter_fields = '__all__'
     filter_class = IncomeFilter
+    
+    def post(self, request, format=None):
+        data = request.data
+        username = data.pop('username')
+        print("charity data: "),
+        print(data)
+        serializer = CharityCreateSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            new_data = serializer.data
+            user = User.objects.filter(
+                Q(username=username)
+            )
+            if not user.exists():
+                raise ValidationError("No account provided.")
+            charity_account = CharityAccount.objects.filter(
+                Q(account=user)
+            )
+            if charity_account.exists():
+                charity_account = charity_account.first()
+            else:
+                raise ValidationError("Charity account not provided.")
+            charity_account.charity = Charity.objects.get(name=data['name'])
+            charity_account.save()
+            return Response(new_data, status=HTTP_200_OK)
+        return Response(serilizer.errors, status=HTTP_400_BAD_REQUEST)

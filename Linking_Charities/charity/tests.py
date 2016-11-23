@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APITestCase
 from rest_framework import status
 from charity.models import *
+from account.models import *
 import json
 
 class CharityTestCase(TestCase):
@@ -29,6 +30,25 @@ class CharityTestCase(TestCase):
         self.assertEqual(len(queryset), 2)
         print("Get all Charity passed.")
 
+class CharityCreationTests(APITestCase):
+
+    def setUp(self):
+        self.charity = {'name': 'foo', 'register_id': 1, 'type': 'E',
+                   'description': 'Some info', 'target': 'C',
+                   'paypal': 'foo@bar.com'}
+
+    def testCharityCreateSerializer(self):
+        response = self.client.post('/api/charity/register', 
+                                    {'account': {'username': 'ming', 'password': '123'}, 
+                                     'description': 'for testing',
+                                     'paypal': 'test paypal'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.charity['username'] = 'ming'
+        self.charity['password'] = '123'
+        response = self.client.post('/api/charities', self.charity, format='json')
+        print("Charity creation passed.")
+
+'''
 class CharitySearchTestCase(APITestCase):
 
     def setUp(self):
@@ -130,3 +150,4 @@ class CharitySearchTestCase(APITestCase):
         self.assertEquals(len(response_data), 1)
         self.assertIn(self.charities[4], response_data)
         print("Searching by multiple params passed")
+'''
