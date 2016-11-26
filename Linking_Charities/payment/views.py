@@ -8,12 +8,25 @@ from rest_framework.permissions import AllowAny
 from rest_framework.status import *
 from rest_framework.response import Response
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+from charity.models import *
 
 class MakePaymentAPIView(CreateAPIView):
     permission_classes = [AllowAny] 
     serializer_class = MakePaymentSerializer
     queryset = Payment.objects.all()
     
+    def post(self, request, format=None):
+        data = request.data
+        paypal = data['business']
+        
+        payment = {
+                    'username': data['item_name'],
+                    'amount'  : data['payment_gross'],
+                    'charity' : Charity.objects.filter(paypal=paypal).first().name,
+                    'currency': data['mc_currency']
+                   }
+        return redirect('https://www.google.com')
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
