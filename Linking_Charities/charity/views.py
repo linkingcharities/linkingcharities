@@ -32,8 +32,6 @@ class ListCreateCharities(generics.ListCreateAPIView):
     def post(self, request, format=None):
         data = request.data
         username = data.pop('username')
-        print("charity data: "),
-        print(data)
         serializer = CharityCreateSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             new_data = serializer.data

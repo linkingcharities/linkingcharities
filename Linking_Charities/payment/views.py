@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from charity.models import *
+from payment.models import *
 
 class MakePaymentAPIView(CreateAPIView):
     permission_classes = [AllowAny] 
@@ -26,6 +27,7 @@ class MakePaymentAPIView(CreateAPIView):
                     'charity' : Charity.objects.filter(paypal=paypal).first().name,
                     'currency': data['mc_currency']
                    }
+        Payment.objects.create(**payment)
         return redirect('https://www.google.com')
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
