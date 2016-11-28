@@ -24,7 +24,7 @@ class PaymentTestCase(TestCase):
     def testGetPaymentAPIWithUser(self):
         
         response = self.client.get('/api/show_payment'
-                                  , { 'username' : 'ming' }
+                                  , { 'username' : 'ming', 'payment': '1' }
                                   , format='json')
         
         returnData = json.loads(response.content.decode())

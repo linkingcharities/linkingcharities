@@ -40,8 +40,11 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = Payment.objects.all()
         user = self.request.query_params.get('username', None)
-        
+        payment = self.request.query_params.get('payment', None) 
         if user is not None:
-            queryset = queryset.filter(username=user)
+          if payment is not None:
+            queryset = queryset.filter(username=user, pk=payment)
             return queryset
+          else:
+            return queryset.filter(username=user)
         return Payment.objects.none()
