@@ -23,12 +23,14 @@ class MakePaymentAPIView(CreateAPIView):
         
         payment = {
                     'username': data['item_name'],
-                    'amount'  : data['payment_gross'],
+                    'amount'  : float(data['payment_gross']),
                     'charity' : Charity.objects.filter(paypal=paypal).first().name,
                     'currency': data['mc_currency']
                    }
-        Payment.objects.create(**payment)
-        return redirect('https://www.google.com')
+        p = Payment.objects.create(**payment)
+        domain = request.get_host()
+        #return redirect(domain + '/thank-you?id=' + p.id)
+        return redirect("http://0.0.0.0:8080/thank-you?id=" + str(p.id))
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
