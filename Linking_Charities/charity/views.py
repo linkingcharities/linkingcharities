@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
-from charity.models import Charity
-from charity.serializers import CharitySerializer, CharityCreateSerializer
+from charity.models import Charity, Volunteering
+from charity.serializers import CharitySerializer, CharityCreateSerializer, VolunteeringSerializer
 from rest_framework.permissions import AllowAny
 import django_filters
 from rest_framework import filters
@@ -50,4 +50,11 @@ class ListCreateCharities(generics.ListCreateAPIView):
             charity_account.charity = Charity.objects.get(name=data['name'])
             charity_account.save()
             return Response(new_data, status=HTTP_200_OK)
-        return Response(serilizer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+class ListCreateVolunteering(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
+    queryset = Volunteering.objects.all()
+    serializer_class = VolunteeringSerializer
+

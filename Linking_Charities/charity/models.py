@@ -32,11 +32,12 @@ CHARITY_PURPOSE = (
     ('OT', 'Other')
 )
 
+
 class Charity(models.Model):
     name = models.CharField(max_length=100, default='DEFAULT')
     type = models.CharField(max_length=2, choices=CHARITY_PURPOSE)
     register_id = models.IntegerField(default=0, unique=True)
-    area_served = models.CharField(max_length=100, default='DEFAULT')  # needs to resolve list issues
+    area_served = models.CharField(max_length=100, default='DEFAULT')
     total_income = models.IntegerField(default=0)
     target = models.CharField(max_length=1, choices=CHARITY_TARGETS)
     logo = models.CharField(max_length=1000, default='DEFAULT')
@@ -45,3 +46,15 @@ class Charity(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Volunteering(models.Model):
+    charity = models.ForeignKey(Charity, on_delete=models.CASCADE)
+    description = models.TextField(blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    url = models.CharField(max_length=300, default='DEFAULT')
+
+    def __str__(self):
+        return self.charity + self.url
+    
