@@ -5,7 +5,9 @@ from charity.serializers import CharitySerializer, CharityCreateSerializer
 from rest_framework.permissions import AllowAny
 import django_filters
 from rest_framework import filters
+from rest_framework.serializers import *
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_400_BAD_REQUEST,
@@ -50,4 +52,19 @@ class ListCreateCharities(generics.ListCreateAPIView):
             charity_account.charity = Charity.objects.get(name=data['name'])
             charity_account.save()
             return Response(new_data, status=HTTP_200_OK)
-        return Response(serilizer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+class updateCharity(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = CharitySerializer
+    
+    def patch(self, request):
+        data = request.data
+        username = data.pop('username')
+        account = User.objects.get(username=username)
+        charity = CharityAccount.objects.get(account=account).charity
+        serializer = CharitySerializer(charity, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_200_OK)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)

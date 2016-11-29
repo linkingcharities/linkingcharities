@@ -12,7 +12,7 @@ class CharitySerializer(serializers.ModelSerializer):
 class CharityCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Charity
-        fields = [ 'name', 'register_id', 'type', 'description', 'target',
+        fields = [ 'name', 'register_id', 'type', 'description', 'target', 'total_income',
                    'paypal']
     
     def validate(self, validated_data):

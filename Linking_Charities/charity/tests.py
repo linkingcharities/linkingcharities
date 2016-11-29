@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from charity.models import *
 from account.models import *
+from django.contrib.auth.models import User
 import json
 
 class CharityTestCase(TestCase):
@@ -48,29 +49,65 @@ class CharityCreationTests(APITestCase):
         response = self.client.post('/api/charities', self.charity, format='json')
         print("Charity creation passed.")
 
-'''
+class CharityUpdateTest(APITestCase):
+ 
+    def setUp(self):
+        self.charity = {'name': 'foo', 'register_id': 2, 'type': 'E',
+                   'description': 'Some info', 'target': 'C',
+                   'paypal': 'foo@bar.com'}
+
+    def testCharityUpdateSerializer(self):
+        response = self.client.post('/api/charity/register',
+                                    {'account': {'username': 'ming', 'password': '123'},
+                                     'description': 'for testing',
+                                     'paypal': 'test paypal'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.charity['username'] = 'ming'
+        self.charity['password'] = '123'
+        response = self.client.post('/api/charities', self.charity, format='json')
+        account = User.objects.get(username='ming')
+        self.assertEqual(CharityAccount.objects.get(account=account).charity.paypal, 'foo@bar.com')
+        update = {'username': 'ming', 'paypal': 'changed'}
+        response = self.client.patch('/api/update_charity', update, format='json')
+        self.assertEqual(CharityAccount.objects.get(account=account).charity.paypal, 'changed')
+        print("Charity update passed.")
+
+
 class CharitySearchTestCase(APITestCase):
 
     def setUp(self):
-        charity = {'id': 1, 'name': 'foo', 'register_id': 1, 'type': 'E',
+        charity = {'username': 'ming', 'id': 1, 'name': 'foo', 'register_id': 1, 'type': 'E',
                    'description': 'Some info', 'target': 'C',
                    'total_income': 10000, 'paypal': 'foo@bar.com'}
-        charity1 = {'id': 2, 'name': 'bar', 'register_id': 2, 'type': 'D',
+        account = {'username': 'ming', 'password': '123', 
+                   'description': 'cccc', 'paypal': 'testing'}
+        charity1 = {'username': 'ming1', 'id': 2, 'name': 'bar', 'register_id': 2, 'type': 'D',
                    'description': 'Some info1', 'target': 'C',
                    'total_income': 1000000, 'paypal': 'foo1@bar.com'}
-        charity2 = {'id': 3, 'name': 'baz', 'register_id': 3, 'type': 'E',
+        account1 = {'username': 'ming1', 'password': '123',
+                   'description': 'cccc', 'paypal': 'testing'}
+        charity2 = {'username': 'ming2', 'id': 3, 'name': 'baz', 'register_id': 3, 'type': 'E',
                    'description': 'Some info2', 'target': 'E',
                    'total_income': 9999, 'paypal': 'foo2@bar.com'}
-        charity3 = {'id': 4, 'name': 'foo', 'register_id': 4, 'type': 'AN',
+        account2 = {'username': 'ming2', 'password': '123',
+                   'description': 'cccc', 'paypal': 'testing'}
+        charity3 = {'username': 'ming3', 'id': 4, 'name': 'foo', 'register_id': 4, 'type': 'AN',
                    'description': 'Some info3', 'target': 'E',
                    'total_income': 1000000000 , 'paypal': 'foo3@bar.com'}
-        charity4 = {'id': 5, 'name': 'boo', 'register_id': 5, 'type': 'E',
+        account3 = {'username': 'ming3', 'password': '123',
+                   'description': 'cccc', 'paypal': 'testing'}
+        charity4 = {'username': 'ming4', 'id': 5, 'name': 'boo', 'register_id': 5, 'type': 'E',
                    'description': 'Some info4', 'target': 'D',
                    'total_income': 123456, 'paypal': 'foo4@bar.com'}
+        account4 = {'username': 'ming4', 'password': '123',
+                   'description': 'cccc', 'paypal': 'testing'}
         self.charities = [charity, charity1, charity2, charity3, charity4]
-        for charity in self.charities:
+        self.accounts = [account, account1, account2, account3, account4]
+        for i in range(0, 5):
             try:
-                self.client.post('/api/charities', charity, format='json')
+                self.client.post('/api/charity/register', self.accounts[i], format='json')
+                self.client.post('/api/charities', self.charities[i], format='json')
+                self.charities[i].pop('username')
             except Exception:
                 self.fail('Error in post request for' + str(charity['name']))
 
@@ -150,4 +187,4 @@ class CharitySearchTestCase(APITestCase):
         self.assertEquals(len(response_data), 1)
         self.assertIn(self.charities[4], response_data)
         print("Searching by multiple params passed")
-'''
+
