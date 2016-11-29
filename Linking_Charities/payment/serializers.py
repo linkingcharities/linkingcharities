@@ -34,4 +34,8 @@ class ShowPaymentSerializer(serializers.ModelSerializer):
             'amount',
             'currency',
         ]
-    
+     
+    def validate(self, validated_data):
+        user = validated_data['username']
+        payment = validated_data['payment']
+        return Payment.objects.get(username=user, payment=payment)

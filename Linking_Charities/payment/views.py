@@ -11,6 +11,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from charity.models import *
 from payment.models import *
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_400_BAD_REQUEST
+)
+from rest_framework.response import Response
+from django.core import serializers
 
 class MakePaymentAPIView(CreateAPIView):
     permission_classes = [AllowAny] 
@@ -29,18 +35,20 @@ class MakePaymentAPIView(CreateAPIView):
                    }
         p = Payment.objects.create(**payment)
         domain = request.get_host()
-        #return redirect('http://' + domain + '/thank-you?id=' + str(p.id))
-        return redirect("http://0.0.0.0:8080/thank-you?id=" + str(p.id))
+        #return redirect('http://' + domain + '/thank-you/' + str(p.id))
+        return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = ShowPaymentSerializer
-    http_method_names = ['get', 'head']
+    http_method_names = ['get', 'post', 'head']
  
     def get_queryset(self):
         queryset = Payment.objects.all()
         user = self.request.query_params.get('username', None)
         payment = self.request.query_params.get('payment', None) 
+        print(user)
+        print(payment)
         if user is not None:
           if payment is not None:
             queryset = queryset.filter(username=user, pk=payment)
@@ -48,3 +56,11 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
           else:
             return queryset.filter(username=user)
         return Payment.objects.none()
+
+    def post(self, request, format=None):
+        data = request.data
+        user = data['username']
+        payment = data['payment']
+        #data = serializers.serialize('json', [ Payment.objects.get(username=user,pk=payment),])
+        data = Payment.objects.get(username=user, pk=payment)
+        return Response({'charity': data.charity, 'amount': data.amount }, status=HTTP_200_OK)
