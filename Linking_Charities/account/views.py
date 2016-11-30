@@ -29,6 +29,8 @@ from rest_framework.permissions import (
 from .serializers import *
 from rest_framework.authtoken.models import Token
 from django.core import serializers
+from charity.serializers import CharitySerializer
+from charity.models import Charity
 
 class DonorAccountCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
@@ -64,7 +66,7 @@ class AccountInfoView(APIView):
             donor = DonorAccount.objects.filter(account=account)
             #need to return token and username and payment
             if donor.exists():
-                response = []                         # 'payment': serializers.serialize(Payment.objects.filter(username=data))}
+                response = []
                 payments = Payment.objects.filter(username=data)
                 for payment in payments:
                     p = { 'username' : payment.username,
@@ -74,11 +76,21 @@ class AccountInfoView(APIView):
                           'date'     : payment.date }
                     response.append(p)
                 return Response(response, status=HTTP_200_OK)
-            charity = CharityAccount.objects.filter(account=account)
+            charity_model = CharityAccount.objects.filter(account=account)
             #need to return charity info
-            if charity.exists():
-                response = []
-                return Response(response, status=HTTP_200_OK)
+            if charity_model.exists():
+                charity = charity_model.first().charity
+                response_data = {
+                                 'name' : charity.name,
+                                 'type' : charity.type,
+                                 'register_id': charity.register_id,
+                                 'area_served': charity.area_served,
+                                 'total_income': charity.total_income,
+                                 'target': charity.target,
+                                 'description': charity.description,
+                                 'paypal': charity.paypal
+                                }
+                return Response(response_data, status=HTTP_200_OK)
             return Response({}, status=HTTP_400_BAD_REQUEST)
             
         return Response({}, status=HTTP_400_BAD_REQUEST)
