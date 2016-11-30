@@ -130,3 +130,17 @@ class SerializerAuthenticationTestCase(APITestCase):
         self.assertEquals(returnData[0], 'Username is not valid.')
 
         print("Charity account invalid username authentication passed.") 
+
+
+class GetAccountInfoTestCase(APITestCase):
+
+    def setUp(self):
+        self.client.post('/api/donor/register', { 'account': {'username': 'ming', 'password': '123'}}, format='json')
+        self.client.get('/api/account_info/?username=ming', format='json')
+
+    def testDonorAccountInfo(self):
+        response = self.client.get('/api/account_info/?username=ming', format='json')
+        print("Retrieve donor acccount info passed")
+
+    def testCharityAccountInfo(self):
+        print("Retrieve charity account info")

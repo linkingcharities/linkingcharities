@@ -8,6 +8,7 @@ from account.models import (
     DonorAccount,
     CharityAccount,
 )
+from payment.models import Payment
 from rest_framework.generics import (
     CreateAPIView,
     DestroyAPIView,
@@ -26,7 +27,8 @@ from rest_framework.permissions import (
     AllowAny,
 )
 from .serializers import *
-
+from rest_framework.authtoken.models import Token
+from django.core import serializers
 
 class DonorAccountCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
@@ -50,3 +52,33 @@ class AccountLoginAPIView(APIView):
             return Response(new_data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
+class AccountInfoView(APIView):
+    permission_classes = [AllowAny]
+    serializer = CharityAccountSerializer
+  
+    def get(self, request):
+        data = request.GET.get('username', None)
+        if data is not None:
+            account = None
+            account = User.objects.get(username = data)
+            donor = DonorAccount.objects.filter(account=account)
+            #need to return token and username and payment
+            if donor.exists():
+                response = []                         # 'payment': serializers.serialize(Payment.objects.filter(username=data))}
+                payments = Payment.objects.filter(username=data)
+                for payment in payments:
+                    p = { 'username' : payment.username,
+                          'charity'  : payment.charity,
+                          'amount'   : payment.amount,
+                          'currency' : payment.currency,
+                          'date'     : payment.date }
+                    response.append(p)
+                return Response(response, status=HTTP_200_OK)
+            charity = CharityAccount.objects.filter(account=account)
+            #need to return charity info
+            if charity.exists():
+                response = []
+                return Response(response, status=HTTP_200_OK)
+            return Response({}, status=HTTP_400_BAD_REQUEST)
+            
+        return Response({}, status=HTTP_400_BAD_REQUEST)
