@@ -28,7 +28,7 @@ class ListCreateCharities(generics.ListCreateAPIView):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,filters.SearchFilter,)
     filter_fields = '__all__'
     filter_class = IncomeFilter
-    
+
     def post(self, request, format=None):
         data = request.data
         username = data.pop('username')
@@ -52,9 +52,15 @@ class ListCreateCharities(generics.ListCreateAPIView):
             return Response(new_data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
+class DateFilter(django_filters.rest_framework.FilterSet):
+    start_date = django_filters.DateFilter(name="start_date", lookup_expr='gte')
+    end_date = django_filters.DateFilter(name="end_date", lookup_expr='lte')
+    class Meta:
+        model = Volunteering
+        fields = ('id', 'charity', 'start_date', 'end_date')
 
 class ListCreateVolunteering(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = Volunteering.objects.all()
     serializer_class = VolunteeringSerializer
-
+    filter_class = DateFilter

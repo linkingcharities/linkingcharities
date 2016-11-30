@@ -57,4 +57,3 @@ class Volunteering(models.Model):
 
     def __str__(self):
         return self.charity + self.url
-    
