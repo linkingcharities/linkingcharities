@@ -76,9 +76,11 @@ class AccountInfoView(APIView):
                           'date'     : payment.date }
                     response.append(p)
                 return Response(response, status=HTTP_200_OK)
-            charity_model = CharityAccount.objects.filter(account=account)
+            charity_accounts = CharityAccount.objects.filter(account=account)
             #need to return charity info
-            if charity_model.exists():
+            if charity_accounts.exists():
+                response = []
+
                 charity = charity_model.first().charity
                 response_data = {
                                  'name' : charity.name,
@@ -90,7 +92,12 @@ class AccountInfoView(APIView):
                                  'description': charity.description,
                                  'paypal': charity.paypal
                                 }
-                return Response(response_data, status=HTTP_200_OK)
+                for charity_account in charity_accounts:
+                    response.append({
+                        'charity_id': charity_account.charity_id
+                    })
+                print(response)
+                return Response(response, status=HTTP_200_OK)
             return Response({}, status=HTTP_400_BAD_REQUEST)
             
         return Response({}, status=HTTP_400_BAD_REQUEST)
