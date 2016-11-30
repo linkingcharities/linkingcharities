@@ -40,6 +40,7 @@ class ListCreateCharities(generics.ListCreateAPIView):
             user = User.objects.filter(
                 Q(username=username)
             )
+            print('reached')
             if not user.exists():
                 raise ValidationError("No account provided.")
             charity_account = CharityAccount.objects.filter(
