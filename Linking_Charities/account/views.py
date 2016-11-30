@@ -70,10 +70,6 @@ class AccountInfoView(APIView):
             donor = DonorAccount.objects.filter(account=account)
             # need to return token and username and payment
             if donor.exists():
-                response = {
-                    'is_charity': False,
-                    'payments': []
-                }
                 payments = Payment.objects.filter(username=data)
                 resp_payments = []
                 for payment in payments:
@@ -83,16 +79,19 @@ class AccountInfoView(APIView):
                          'currency': payment.currency,
                          'date': payment.date}
                     resp_payments.append(p)
-                response['payments'] = resp_payments
+
+                response = {
+                    'is_charity': False,
+                    'payments': resp_payments
+                }
                 return Response(response, status=HTTP_200_OK)
 
             charity_accounts = CharityAccount.objects.filter(account=account)
             if charity_accounts.exists():
-                response = []
                 charity_account = charity_accounts.first()
 
                 charity = charity_account.charity
-                response_data = {
+                charity_data = {
                     'name': charity.name,
                     'type': charity.type,
                     'register_id': charity.register_id,
@@ -107,7 +106,7 @@ class AccountInfoView(APIView):
                     'is_charity': True,
                     'charity_id': charity_account.charity_id,
                     'payments': [],
-                    'charity': response_data
+                    'charity': charity_data
                 }
                 # Can add in associated payments here
                 return Response(response, status=HTTP_200_OK)
