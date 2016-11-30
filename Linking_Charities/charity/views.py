@@ -57,7 +57,9 @@ class DateFilter(django_filters.rest_framework.FilterSet):
     end_date = django_filters.DateFilter(name="end_date", lookup_expr='lte')
     class Meta:
         model = Volunteering
-        fields = ('id', 'charity', 'start_date', 'end_date')
+        fields = ('id', 'name', 'charity', 'start_date', 'end_date')
+
+        #TODO: FILTERING NAME BY FUZZY SEARCH, NOT NECESSARILY EXACT MATCH
 
 class ListCreateVolunteering(generics.ListCreateAPIView):
     permission_classes = [AllowAny]

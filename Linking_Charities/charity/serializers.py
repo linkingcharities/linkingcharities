@@ -14,7 +14,7 @@ class CharityCreateSerializer(serializers.ModelSerializer):
         model = Charity
         fields = [ 'name', 'register_id', 'type', 'description', 'target',
                    'paypal']
-    
+
     def validate(self, validated_data):
         charity = Charity.objects.create(**validated_data)
         return charity
@@ -23,4 +23,4 @@ class CharityCreateSerializer(serializers.ModelSerializer):
 class VolunteeringSerializer(serializers.ModelSerializer):
     class Meta:
         model = Volunteering
-        fields = ('id', 'charity', 'description', 'start_date', 'end_date', 'url')
+        fields = ('id', 'name', 'charity', 'description', 'start_date', 'end_date', 'url')

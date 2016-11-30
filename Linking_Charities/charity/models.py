@@ -49,6 +49,7 @@ class Charity(models.Model):
 
 
 class Volunteering(models.Model):
+    name = models.CharField(max_length=200, default='DEFAULT')
     charity = models.ForeignKey(Charity, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     start_date = models.DateField(null=True, blank=True)
