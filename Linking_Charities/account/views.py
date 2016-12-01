@@ -32,15 +32,18 @@ from django.core import serializers
 from charity.serializers import CharitySerializer
 from charity.models import Charity
 
+
 class DonorAccountCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = DonorAccountSerializer
     queryset = DonorAccount.objects.all()
-    
+
+
 class CharityAccountCreateAPIView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = CharityAccountSerializer
     queryset = CharityAccount.objects.all()
+
 
 class AccountLoginAPIView(APIView):
     permission_classes = [AllowAny]
@@ -54,43 +57,59 @@ class AccountLoginAPIView(APIView):
             return Response(new_data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
+
 class AccountInfoView(APIView):
     permission_classes = [AllowAny]
     serializer = CharityAccountSerializer
-  
+
     def get(self, request):
         data = request.GET.get('username', None)
         if data is not None:
             account = None
-            account = User.objects.get(username = data)
+            account = User.objects.get(username=data)
             donor = DonorAccount.objects.filter(account=account)
-            #need to return token and username and payment
+            # need to return token and username and payment
             if donor.exists():
-                response = []
                 payments = Payment.objects.filter(username=data)
+                resp_payments = []
                 for payment in payments:
-                    p = { 'username' : payment.username,
-                          'charity'  : payment.charity,
-                          'amount'   : payment.amount,
-                          'currency' : payment.currency,
-                          'date'     : payment.date }
-                    response.append(p)
+                    p = {'username': payment.username,
+                         'charity': payment.charity,
+                         'amount': payment.amount,
+                         'currency': payment.currency,
+                         'date': payment.date}
+                    resp_payments.append(p)
+
+                response = {
+                    'is_charity': False,
+                    'payments': resp_payments
+                }
                 return Response(response, status=HTTP_200_OK)
-            charity_model = CharityAccount.objects.filter(account=account)
-            #need to return charity info
-            if charity_model.exists():
-                charity = charity_model.first().charity
-                response_data = {
-                                 'name' : charity.name,
-                                 'type' : charity.type,
-                                 'register_id': charity.register_id,
-                                 'area_served': charity.area_served,
-                                 'total_income': charity.total_income,
-                                 'target': charity.target,
-                                 'description': charity.description,
-                                 'paypal': charity.paypal
-                                }
-                return Response(response_data, status=HTTP_200_OK)
+
+            charity_accounts = CharityAccount.objects.filter(account=account)
+            if charity_accounts.exists():
+                charity_account = charity_accounts.first()
+
+                charity = charity_account.charity
+                charity_data = {
+                    'name': charity.name,
+                    'type': charity.type,
+                    'register_id': charity.register_id,
+                    'area_served': charity.area_served,
+                    'total_income': charity.total_income,
+                    'target': charity.target,
+                    'description': charity.description,
+                    'paypal': charity.paypal
+                }
+
+                response = {
+                    'is_charity': True,
+                    'charity_id': charity_account.charity_id,
+                    'payments': [],
+                    'charity': charity_data
+                }
+                # Can add in associated payments here
+                return Response(response, status=HTTP_200_OK)
             return Response({}, status=HTTP_400_BAD_REQUEST)
-            
+
         return Response({}, status=HTTP_400_BAD_REQUEST)
