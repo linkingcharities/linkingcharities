@@ -5,7 +5,9 @@ from charity.serializers import CharitySerializer, CharityCreateSerializer, Volu
 from rest_framework.permissions import AllowAny
 import django_filters
 from rest_framework import filters
+from rest_framework.serializers import *
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_400_BAD_REQUEST,
@@ -38,6 +40,7 @@ class ListCreateCharities(generics.ListCreateAPIView):
             user = User.objects.filter(
                 Q(username=username)
             )
+            print('reached')
             if not user.exists():
                 raise ValidationError("No account provided.")
             charity_account = CharityAccount.objects.filter(
@@ -97,3 +100,19 @@ class ListCreateVolunteering(generics.ListCreateAPIView):
                     'url': v.url }
                 return Response(d, status=HTTP_200_OK)
             return Response('ID not found', status=HTTP_400_BAD_REQUEST)
+
+
+class updateCharity(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = CharitySerializer
+
+    def patch(self, request):
+        data = request.data
+        username = data.pop('username')
+        account = User.objects.get(username=username)
+        charity = CharityAccount.objects.get(account=account).charity
+        serializer = CharitySerializer(charity, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_200_OK)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
