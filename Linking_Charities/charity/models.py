@@ -57,4 +57,4 @@ class Volunteering(models.Model):
     url = models.CharField(max_length=300, default='DEFAULT')
 
     def __str__(self):
-        return self.charity + self.url
+        return str(self.id) + self.name;
