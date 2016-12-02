@@ -35,6 +35,7 @@ class MakePaymentAPIView(CreateAPIView):
                    }
         p = Payment.objects.create(**payment)
         domain = request.get_host()
+        domain = domain[:-5]
         return redirect('http://' + domain + '/thank-you/' + str(p.id))
         #return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
 
