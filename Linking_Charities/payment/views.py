@@ -35,8 +35,8 @@ class MakePaymentAPIView(CreateAPIView):
                    }
         p = Payment.objects.create(**payment)
         domain = request.get_host()
-        #return redirect('http://' + domain + '/thank-you/' + str(p.id))
-        return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
+        return redirect('http://' + domain + '/thank-you/' + str(p.id))
+        #return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
@@ -56,6 +56,7 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
         return Payment.objects.none()
 
     def post(self, request, format=None):
+        print('reached')
         data = request.data
         user = data['username']
         payment = data['payment']
