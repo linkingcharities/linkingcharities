@@ -13,6 +13,7 @@ from payment.views import (
     ShowPaymentAPIView,
 )
 from rest_framework.authtoken import views
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -27,3 +28,6 @@ urlpatterns = [
     url(r'^api/make_payment', MakePaymentAPIView.as_view(), name='make_payment'),
     url(r'^api/volunteering', ListCreateVolunteering.as_view(), name='list_volunteering'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
