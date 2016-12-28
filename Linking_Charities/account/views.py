@@ -63,14 +63,14 @@ class AccountInfoView(APIView):
     serializer = CharityAccountSerializer
 
     def get(self, request):
-        data = request.GET.get('username', None)
+        data = request.GET.get('account_id', None)
         if data is not None:
             account = None
-            account = User.objects.get(username=data)
+            account = User.objects.get(id=data)
             donor = DonorAccount.objects.filter(account=account)
             # need to return token and username and payment
             if donor.exists():
-                payments = Payment.objects.filter(username=data)
+                payments = Payment.objects.filter(account_id=data)
                 resp_payments = []
                 for payment in payments:
                     p = {'username': payment.username,
