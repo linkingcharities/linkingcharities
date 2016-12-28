@@ -17,6 +17,7 @@ from rest_framework.status import (
 )
 from rest_framework.response import Response
 from django.core import serializers
+from django.contrib.auth.models import User
 
 class MakePaymentAPIView(CreateAPIView):
     permission_classes = [AllowAny] 
@@ -29,8 +30,10 @@ class MakePaymentAPIView(CreateAPIView):
         
         payment = {
                     'username': data['item_name'],
+                    'account_id': User.objects.filter(username=data['item_name']).first().id,
                     'amount'  : float(data['payment_gross']),
                     'charity' : Charity.objects.filter(paypal=paypal).first().name,
+                    'charity_id' : Charity.objects.filter(paypal=paypal).first().id,
                     'currency': data['mc_currency']
                    }
         p = Payment.objects.create(**payment)

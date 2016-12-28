@@ -29,7 +29,9 @@ class ShowPaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = [
             'username',
+            'account_id',
             'charity',
+            'charity_id',
             'date',
             'amount',
             'currency',
