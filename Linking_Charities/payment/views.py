@@ -57,7 +57,6 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
         return Payment.objects.none()
 
     def post(self, request, format=None):
-        print('reached')
         data = request.data
         user = data['username']
         payment = data['payment']
