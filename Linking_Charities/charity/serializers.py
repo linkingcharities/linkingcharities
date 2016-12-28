@@ -23,4 +23,4 @@ class CharityCreateSerializer(serializers.ModelSerializer):
 class VolunteeringSerializer(serializers.ModelSerializer):
     class Meta:
         model = Volunteering
-        fields = ('id', 'name', 'charity', 'description', 'start_date', 'end_date', 'url')
+        fields = ('id', 'name', 'charity', 'description', 'start_date', 'end_date', 'url', 'charity_name')

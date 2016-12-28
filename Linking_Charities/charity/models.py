@@ -61,3 +61,6 @@ class Volunteering(models.Model):
 
     def __str__(self):
         return str(self.id) + self.name;
+
+    def charity_name(self):
+        return str(self.charity.name)
