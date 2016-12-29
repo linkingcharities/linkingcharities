@@ -65,16 +65,15 @@ class AccountInfoView(APIView):
     def get(self, request):
         data = request.GET.get('username', None)
         if data is not None:
-            account = None
             account = User.objects.get(username=data)
             donor = DonorAccount.objects.filter(account=account)
             # need to return token and username and payment
             if donor.exists():
-                payments = Payment.objects.filter(username=data)
+                payments = Payment.objects.filter(account_id=account.id)
                 resp_payments = []
                 for payment in payments:
-                    p = {'username': payment.username,
-                         'charity': payment.charity,
+                    p = {'account_id': payment.account_id,
+                         'charity_id': payment.charity_id,
                          'amount': payment.amount,
                          'currency': payment.currency,
                          'date': payment.date}

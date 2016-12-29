@@ -9,9 +9,8 @@ CURRENCY = (
 )
 
 class Payment(models.Model):
-    username = models.CharField(max_length=100, default="DEFAULT")
     account_id = models.IntegerField(default=0, null=True)
-    charity = models.CharField(max_length=100, default="DEFAULT")
+    paypal = models.CharField(max_length=100, default="DEFAULT")
     charity_id = models.IntegerField(default=0, null=True)
     date = models.DateTimeField(default=timezone.now, blank=True)
     amount = models.IntegerField(default=0, null=True)
