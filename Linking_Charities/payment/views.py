@@ -18,6 +18,7 @@ from rest_framework.status import (
 from rest_framework.response import Response
 from django.core import serializers
 from django.contrib.auth.models import User
+from django.db.models.functions import TruncYear
 
 
 class MakePaymentAPIView(CreateAPIView):
@@ -30,19 +31,17 @@ class MakePaymentAPIView(CreateAPIView):
         paypal = data['business']
 
         payment = {
-            'username': data['item_name'],
-            'account_id': User.objects.filter(username=data['item_name']).first().id,
-            'amount': float(data['payment_gross']),
-            'charity': Charity.objects.filter(paypal=paypal).first().name,
-            'charity_id': Charity.objects.filter(paypal=paypal).first().id,
-            'currency': data['mc_currency']
-        }
+                    'account_id': data['item_name'],
+                    'paypal' : data['business'],
+                    'amount'  : float(data['payment_gross']),
+                    'charity_id' : Charity.objects.filter(paypal=paypal).first().id,
+                    'currency': data['mc_currency']
+                   }
         p = Payment.objects.create(**payment)
         domain = request.get_host()
         domain = domain[:-5]
-        return redirect('http://' + domain + '/thank-you/' + str(p.id))
-        # return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
-
+        #return redirect('http://' + domain + '/thank-you/' + str(p.id))
+        return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
@@ -52,19 +51,28 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = Payment.objects.all()
         user = self.request.query_params.get('username', None)
+        account = User.objects.filter(username=user)
+        if account.exists():
+          account = account.first()
+        else:
+          return Payment.objects.none()
         payment = self.request.query_params.get('payment', None)
-        if user is not None:
-            if payment is not None:
-                queryset = queryset.filter(username=user, pk=payment)
-                return queryset
-            else:
-                return queryset.filter(username=user)
+        if payment is not None:
+          queryset = queryset.filter(account_id=account.id, pk=payment)
+          return queryset
+        else:
+          return queryset.filter(account_id=account.id)
         return Payment.objects.none()
 
     def post(self, request, format=None):
         data = request.data
         user = data['username']
         payment = data['payment']
-        # data = serializers.serialize('json', [ Payment.objects.get(username=user,pk=payment),])
-        data = Payment.objects.get(username=user, pk=payment)
-        return Response({'charity': data.charity, 'amount': data.amount}, status=HTTP_200_OK)
+        account = User.objects.filter(username=user)
+        if account.exists():
+          account = account.first()
+        else:
+          return Payment.objects.none()
+        data = Payment.objects.get(account_id=account.id, pk=payment)
+        charity = Charity.objects.get(pk=data.charity_id)
+        return Response({'charity': charity.name, 'amount': data.amount }, status=HTTP_200_OK)

@@ -12,11 +12,13 @@ class CharityTestCase(TestCase):
         Charity.objects.create(
             name="testing1",
             description="helping children",
-            register_id = 124)
+            register_id = 124,
+            paypal = "paypal1")
         Charity.objects.create(
             name="testing2",
             description="helping elderly",
-            register_id = 125)
+            register_id = 125,
+            paypal = "paypal2")
 
     def testGetAllCharity(self):
         queryset = Charity.objects.all()
