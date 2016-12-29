@@ -20,15 +20,16 @@ from django.core import serializers
 from django.contrib.auth.models import User
 from django.db.models.functions import TruncYear
 
+
 class MakePaymentAPIView(CreateAPIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
     serializer_class = MakePaymentSerializer
     queryset = Payment.objects.all()
-    
+
     def post(self, request, format=None):
         data = request.data
         paypal = data['business']
-        
+
         payment = {
                     'account_id': data['item_name'],
                     'paypal' : data['business'],
@@ -39,7 +40,6 @@ class MakePaymentAPIView(CreateAPIView):
         p = Payment.objects.create(**payment)
         domain = request.get_host()
         domain = domain[:-5]
-        print(data)
         #return redirect('http://' + domain + '/thank-you/' + str(p.id))
         return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
 
@@ -47,7 +47,7 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = ShowPaymentSerializer
     http_method_names = ['get', 'post', 'head']
- 
+
     def get_queryset(self):
         queryset = Payment.objects.all()
         user = self.request.query_params.get('username', None)

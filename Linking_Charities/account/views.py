@@ -63,7 +63,7 @@ class AccountInfoView(APIView):
     serializer = CharityAccountSerializer
 
     def get(self, request):
-        data = request.GET.get('username', None)
+        data = request.GET.get('account_id', None)
         if data is not None:
             account = User.objects.get(username=data)
             donor = DonorAccount.objects.filter(account=account)
