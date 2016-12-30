@@ -74,9 +74,11 @@ class SerializerAuthenticationTestCase(APITestCase):
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
         auth_key = json.loads(response.content.decode())['token']
+        id = json.loads(response.content.decode())['id']
         user = User.objects.get(username=donorLoginData['username'])
         token = Token.objects.get(user=user)
         self.assertEquals(auth_key, token.key)
+        self.assertEquals('1',id)
 
         print("Donor account authentication passed.")
  
@@ -109,7 +111,9 @@ class SerializerAuthenticationTestCase(APITestCase):
         auth_key = json.loads(response.content.decode())['token']
         user = User.objects.get(username=charityLoginData['username'])
         token = Token.objects.get(user=user)
+        id = json.loads(response.content.decode())['id']
         self.assertEquals(auth_key, token.key)
+        self.assertEquals('2',id)
  
         print("Charity account authentication passed.")  
 

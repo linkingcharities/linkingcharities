@@ -44,7 +44,7 @@ class Charity(models.Model):
     target = models.CharField(max_length=1, choices=CHARITY_TARGETS)
     logo = models.CharField(max_length=1000, default='DEFAULT')
     description = models.TextField()
-    paypal = models.CharField(max_length=100, default='DEFAULT')
+    paypal = models.CharField(max_length=100, unique=True, default='DEFAULT')
 
     def __str__(self):
         return self.name
