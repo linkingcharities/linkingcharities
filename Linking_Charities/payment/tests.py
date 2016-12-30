@@ -95,5 +95,6 @@ class PaymentTestCase(TestCase):
         self.assertEquals(entry['currency'], 'USD')
         self.assertEquals(entry['amount'], 12)
         self.assertEquals(entry['account_id'], user.id)
+        self.assertEquals(Charity.objects.get(pk=self.charity.id).donations, 12)
 
         print("Make payment API passed.")

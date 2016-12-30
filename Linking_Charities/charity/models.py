@@ -43,6 +43,7 @@ class Charity(models.Model):
     logo = models.CharField(max_length=1000, default='DEFAULT')
     description = models.TextField()
     paypal = models.CharField(max_length=100, unique=True, default='DEFAULT')
+    donations = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
