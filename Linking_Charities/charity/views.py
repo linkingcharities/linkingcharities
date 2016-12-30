@@ -25,7 +25,7 @@ class IncomeFilter(django_filters.rest_framework.FilterSet):
 
 class ListCreateCharities(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    queryset = Charity.objects.all()
+    queryset = Charity.objects.all().order_by('-donations')
     serializer_class = CharitySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,filters.SearchFilter,)
     filter_class = IncomeFilter
