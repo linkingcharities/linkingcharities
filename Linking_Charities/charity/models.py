@@ -45,7 +45,6 @@ class Charity(models.Model):
     logo = models.CharField(max_length=1000, default='DEFAULT')
     description = models.TextField()
     paypal = models.CharField(max_length=100, default='DEFAULT')
-    logo = models.ImageField(upload_to=upload_location, null=True,blank=True)
 
     def __str__(self):
         return self.name

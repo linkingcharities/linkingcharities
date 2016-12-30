@@ -7,7 +7,7 @@ class CharitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Charity
         fields = ('id', 'name', 'register_id', 'type','description', 'target',
-                  'total_income', 'paypal', 'logo')
+                  'total_income', 'paypal')
 
 class CharityCreateSerializer(serializers.ModelSerializer):
     class Meta:
