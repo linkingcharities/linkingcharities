@@ -149,13 +149,16 @@ PAYPAL_TEST = True
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
-try:
-    from local import *
-    print('testing')
-except ImportError as e:
-    print('production')
-    # HTTPS?
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+TESTING = (len(sys.argv) > 1 and sys.argv[1] == 'test')
+
+if not TESTING:
+    try:
+        from local import *
+        print('testing')
+    except ImportError as e:
+        print('production')
+        # HTTPS?
+        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+        SECURE_SSL_REDIRECT = True
+        SESSION_COOKIE_SECURE = True
+        CSRF_COOKIE_SECURE = True
