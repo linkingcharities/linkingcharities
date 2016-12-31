@@ -149,10 +149,10 @@ PAYPAL_TEST = True
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
-TESTING = (len(sys.argv) > 1 and sys.argv[1] == 'test')
-if TESTING:
+try:
+    from local import *
     print('testing')
-else:
+except ImportError as e:
     print('production')
     # HTTPS?
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
