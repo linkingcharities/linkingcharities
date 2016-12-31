@@ -72,11 +72,14 @@ class AccountInfoView(APIView):
                 payments = Payment.objects.filter(account_id=account.id)
                 resp_payments = []
                 for payment in payments:
+                    charity = Charity.objects.get(id=payment.charity_id)
                     p = {'account_id': payment.account_id,
                          'charity_id': payment.charity_id,
                          'amount': payment.amount,
                          'currency': payment.currency,
-                         'date': payment.date}
+                         'date': payment.date,
+                         'charity': charity.name
+                         }
                     resp_payments.append(p)
 
                 response = {
