@@ -30,7 +30,8 @@ class MakePaymentAPIView(CreateAPIView):
         data = request.data
         paypal = data['business']
         charity = Charity.objects.filter(paypal=paypal).first()
-        charity.donations = charity.donations + int(data['payment_gross'])
+        print(data)
+        charity.donations = charity.donations + int(float(data['mc_gross']))
         charity.save()
         payment = {
                     'account_id': data['item_name'],
