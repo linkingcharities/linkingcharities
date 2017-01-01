@@ -94,3 +94,6 @@ db.sqlite3
 
 # IDE
 .idea/
+
+# Local setting
+local.py

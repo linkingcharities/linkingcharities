@@ -32,6 +32,8 @@ CHARITY_PURPOSE = (
     ('OT', 'Other')
 )
 
+def upload_location(instance, filename):
+    return "%s/%s" %(instance.id, filename)
 
 class Charity(models.Model):
     name = models.CharField(max_length=100, default='DEFAULT')
@@ -42,7 +44,8 @@ class Charity(models.Model):
     target = models.CharField(max_length=1, choices=CHARITY_TARGETS)
     logo = models.CharField(max_length=1000, default='DEFAULT')
     description = models.TextField()
-    paypal = models.CharField(max_length=100, default='DEFAULT')
+    paypal = models.CharField(max_length=100, unique=True, default='DEFAULT')
+    donations = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -58,3 +61,6 @@ class Volunteering(models.Model):
 
     def __str__(self):
         return str(self.id) + self.name;
+
+    def charity_name(self):
+        return str(self.charity.name)

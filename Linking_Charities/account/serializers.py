@@ -47,12 +47,14 @@ class CharityAccountSerializer(serializers.ModelSerializer):
 class AccountLoginSerializer(serializers.ModelSerializer):
     username = CharField(required=True)
     token = CharField(allow_blank=True, read_only=True)
+    id = CharField(allow_blank=True, read_only=True)
     class Meta:
         model = User
         fields = [
             'username',
             'password',
-            'token'
+            'token',
+            'id'
         ]
         extra_kwargs = {"password": {"write_only": True} }
     
@@ -84,6 +86,8 @@ class AccountLoginSerializer(serializers.ModelSerializer):
 
         token = Token.objects.get(user=account)
         data["token"] = token
+        id = user.first().id
+        data["id"] = id
         
         return data
 

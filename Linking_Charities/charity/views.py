@@ -25,10 +25,9 @@ class IncomeFilter(django_filters.rest_framework.FilterSet):
 
 class ListCreateCharities(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    queryset = Charity.objects.all()
+    queryset = Charity.objects.all().order_by('-donations')
     serializer_class = CharitySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,filters.SearchFilter,)
-    filter_fields = '__all__'
     filter_class = IncomeFilter
 
     def post(self, request, format=None):
@@ -40,7 +39,6 @@ class ListCreateCharities(generics.ListCreateAPIView):
             user = User.objects.filter(
                 Q(username=username)
             )
-            print('reached')
             if not user.exists():
                 raise ValidationError("No account provided.")
             charity_account = CharityAccount.objects.filter(
@@ -60,46 +58,13 @@ class DateFilter(django_filters.rest_framework.FilterSet):
     end_date = django_filters.DateFilter(name="end_date", lookup_expr='lte')
     class Meta:
         model = Volunteering
-        fields = ('id', 'name', 'charity', 'start_date', 'end_date')
-
-        #TODO: FILTERING NAME BY FUZZY SEARCH, NOT NECESSARILY EXACT MATCH
+        fields = ('id', 'charity','start_date', 'end_date')
 
 class ListCreateVolunteering(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = Volunteering.objects.all()
     serializer_class = VolunteeringSerializer
     filter_class = DateFilter
-
-    def get(self, request):
-        id = request.GET.get('id', None)
-        if id is None:
-            volunteering = Volunteering.objects.all()
-            data = []
-            for v in volunteering:
-                d = {
-                    'id': v.id,
-                    'name': v.name,
-                    'charity_name': v.charity.name,
-                    'description': v.description,
-                    'start_date': v.start_date,
-                    'end_date': v.end_date,
-                    'url': v.url }
-                data.append(d)
-            return Response(data, status=HTTP_200_OK)
-        else:
-            v = Volunteering.objects.filter(pk=id)
-            if v.exists():
-                v = v.first()
-                d = {
-                    'id': v.id,
-                    'name': v.name,
-                    'charity_name': v.charity.name,
-                    'description': v.description,
-                    'start_date': v.start_date,
-                    'end_date': v.end_date,
-                    'url': v.url }
-                return Response(d, status=HTTP_200_OK)
-            return Response('ID not found', status=HTTP_400_BAD_REQUEST)
 
 
 class updateCharity(APIView):

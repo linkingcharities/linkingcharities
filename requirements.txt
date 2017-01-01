@@ -7,3 +7,4 @@ djangorestframework==3.4.7
 pytz==2016.7
 requests==2.11.1
 six==1.10.0
+pillow==3.4.2
