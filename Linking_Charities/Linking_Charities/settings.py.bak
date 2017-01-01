@@ -8,7 +8,6 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'sslserver',
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
@@ -149,17 +147,3 @@ PAYPAL_TEST = True
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
-
-TESTING = (len(sys.argv) > 1 and sys.argv[1] == 'test')
-
-if not TESTING:
-    try:
-        from local import *
-        print('testing')
-    except ImportError as e:
-        print('production')
-        # HTTPS?
-        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-        SECURE_SSL_REDIRECT = True
-        SESSION_COOKIE_SECURE = True
-        CSRF_COOKIE_SECURE = True
