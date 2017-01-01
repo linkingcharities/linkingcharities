@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from charity.views import ListCreateCharities, ListCreateVolunteering, updateCharity
+from charity.views import ListCreateCharities, ListCreateVolunteering, updateCharity, UpdateVolunteering
 from payment.views import *
 from account.views import (
     DonorAccountCreateAPIView,
@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^api/auth_token', views.obtain_auth_token, name='auth token api'),
     url(r'^api/show_payment', ShowPaymentAPIView.as_view(), name='see_payment'),
     url(r'^api/make_payment', MakePaymentAPIView.as_view(), name='make_payment'),
-    url(r'^api/volunteering', ListCreateVolunteering.as_view(), name='list_volunteering'),
+    url(r'^api/volunteering$', ListCreateVolunteering.as_view(), name='list_volunteering'),
+    url(r'^api/volunteering/(?P<pk>[0-9]+)/$', UpdateVolunteering.as_view(), name='update_volunteering')
 ]
