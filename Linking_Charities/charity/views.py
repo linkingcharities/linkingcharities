@@ -81,3 +81,9 @@ class updateCharity(APIView):
             serializer.save()
             return Response(serializer.data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+class UpdateVolunteering(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [AllowAny]
+    queryset = Volunteering.objects.all()
+    serializer_class = VolunteeringSerializer
