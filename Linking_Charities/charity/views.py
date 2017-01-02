@@ -82,16 +82,7 @@ class updateCharity(APIView):
             return Response(serializer.data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-class updateVolunteering(APIView):
+class UpdateVolunteering(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowAny]
+    queryset = Volunteering.objects.all()
     serializer_class = VolunteeringSerializer
-    
-    def patch(self, request):
-        data = request.data
-        vol_id = data.pop('id')
-        vol = Volunteering.objects.get(pk=vol_id)
-        serializer = VolunteeringSerializer(vol, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=HTTP_200_OK)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)

@@ -86,8 +86,8 @@ class VolunteeringUpdateTest(APITestCase):
                                  charity=Charity.objects.get(register_id=124),                                    url="www.google.com")
     
     def testUpdateVolunteering(self):
-        self.client.patch('/api/update_volunteering', 
-                           {'name':'brandnewvol', 'id': self.vol.id}, format='json')
+        self.client.patch('/api/volunteering?pk=' + str(self.vol.id), 
+                           {'name':'brandnewvol'}, format='json')
         self.assertEqual(Volunteering.objects.get(pk=self.vol.id).name, 'brandnewvol')
      
         print("Volunteering update passed.")
