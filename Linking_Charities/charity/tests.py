@@ -110,6 +110,14 @@ class VolunteeringUpdateTestCase(APITestCase):
         self.assertEqual(response_data['name'], 'changed')
         print("Updating volunteering passed")
 
+    def testDeleteVolunteering(self):
+        response = self.client.delete('/api/volunteering/1')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.get('/api/volunteering')
+        response_data = json.loads(response.content.decode())
+        self.assertEqual(len(response_data), 0)
+        print("Deleting volunteering passed")
+
 
 class CharitySearchTestCase(APITestCase):
 
