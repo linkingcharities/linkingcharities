@@ -31,6 +31,7 @@ from rest_framework.authtoken.models import Token
 from django.core import serializers
 from charity.serializers import CharitySerializer
 from charity.models import Charity
+from library import *
 
 
 class DonorAccountCreateAPIView(CreateAPIView):
@@ -54,8 +55,8 @@ class AccountLoginAPIView(APIView):
         serializer = AccountLoginSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             new_data = serializer.data
-            return Response(new_data, status=HTTP_200_OK)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            return makeHttpResponse(new_data, status=HTTP_200_OK)
+        return makeHttpResponse(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
 class AccountInfoView(APIView):
@@ -86,7 +87,7 @@ class AccountInfoView(APIView):
                     'is_charity': False,
                     'payments': resp_payments
                 }
-                return Response(response, status=HTTP_200_OK)
+                return makeHttpResponse(response, status=HTTP_200_OK)
 
             charity_accounts = CharityAccount.objects.filter(account=account)
             if charity_accounts.exists():
@@ -111,7 +112,7 @@ class AccountInfoView(APIView):
                     'charity': charity_data
                 }
                 # Can add in associated payments here
-                return Response(response, status=HTTP_200_OK)
-            return Response({}, status=HTTP_400_BAD_REQUEST)
+                return makeHttpResponse(response, status=HTTP_200_OK)
+            return makeHttpResponse({}, status=HTTP_400_BAD_REQUEST)
 
-        return Response({}, status=HTTP_400_BAD_REQUEST)
+        return makeHttpResponse({}, status=HTTP_400_BAD_REQUEST)

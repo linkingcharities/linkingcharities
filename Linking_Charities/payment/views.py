@@ -19,6 +19,7 @@ from rest_framework.response import Response
 from django.core import serializers
 from django.contrib.auth.models import User
 from django.db.models.functions import TruncYear
+from library import *
 
 
 class MakePaymentAPIView(CreateAPIView):
@@ -77,4 +78,4 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
           return Payment.objects.none()
         data = Payment.objects.get(account_id=account.id, pk=payment)
         charity = Charity.objects.get(pk=data.charity_id)
-        return Response({'charity': charity.name, 'amount': data.amount }, status=HTTP_200_OK)
+        return makeHttpResponse({'charity': charity.name, 'amount': data.amount }, HTTP_200_OK)
