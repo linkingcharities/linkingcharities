@@ -30,14 +30,15 @@ class MakePaymentAPIView(CreateAPIView):
     def post(self, request, format=None):
         data = request.data
         paypal = data['business']
-        charity = Charity.objects.filter(paypal=paypal).first()
+        charity = Charity.objects.get(paypal=paypal)
         charity.donations = charity.donations + int(float(data['mc_gross']))
         charity.save()
+        user = User.objects.get(pk=data['item_name'])
         payment = {
-                    'account_id': data['item_name'],
+                    'account': user,
                     'paypal' : data['business'],
                     'amount'  : float(data['mc_gross']),
-                    'charity_id' : charity.id,
+                    'charity' : charity,
                     'currency': data['mc_currency']
                    }
         p = Payment.objects.create(**payment)
@@ -68,9 +69,9 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
         ret = []
         for payment in return_data:
             ret.append({
-                        'account_id': payment.account_id,
+                        'account_id': payment.account.id,
                         'paypal': payment.paypal,
-                        'charity_id': payment.charity_id,
+                        'charity_id': payment.charity.id,
                         'date': str(payment.date),
                         'amount': payment.amount,
                         'currency': payment.currency
