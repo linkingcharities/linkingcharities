@@ -40,7 +40,8 @@ class CharityCreationTests(APITestCase):
     def setUp(self):
         self.charity = {'name': 'foo', 'register_id': 1, 'type': 'E',
                         'description': 'Some info', 'target': 'C',
-                        'paypal': 'foo@bar.com'}
+                        'paypal': 'foo@bar.com', 'charitableActivity': 10,
+                        'fundraising': 10, 'admin': 80}
 
     def testCharityCreateSerializer(self):
         response = self.client.post('/api/charity/register',
@@ -52,6 +53,9 @@ class CharityCreationTests(APITestCase):
         self.charity['password'] = '123'
         response = self.client.post(
             '/api/charities', self.charity, format='json')
+ 
+        charity = Charity.objects.get(register_id=1)
+        self.assertEqual(charity.admin, 80)
         print("Charity creation passed.")
 
 
@@ -124,27 +128,32 @@ class CharitySearchTestCase(APITestCase):
     def setUp(self):
         charity = {'username': 'ming', 'id': 1, 'name': 'foo', 'register_id': 1, 'type': 'E',
                    'description': 'Some info', 'target': 'C',
-                   'total_income': 10000, 'paypal': 'foo@bar.com'}
+                   'total_income': 10000, 'paypal': 'foo@bar.com',
+                   'charitableActivity': 0, 'fundraising': 0, 'admin': 0}
         account = {'username': 'ming', 'password': '123',
                    'description': 'cccc', 'paypal': 'testing'}
         charity1 = {'username': 'ming1', 'id': 2, 'name': 'bar', 'register_id': 2, 'type': 'D',
                     'description': 'Some info1', 'target': 'C',
-                    'total_income': 1000000, 'paypal': 'foo1@bar.com'}
+                    'total_income': 1000000, 'paypal': 'foo1@bar.com',
+                   'charitableActivity': 0, 'fundraising': 0, 'admin': 0}
         account1 = {'username': 'ming1', 'password': '123',
                     'description': 'cccc', 'paypal': 'testing'}
         charity2 = {'username': 'ming2', 'id': 3, 'name': 'baz', 'register_id': 3, 'type': 'E',
                     'description': 'Some info2', 'target': 'E',
-                    'total_income': 9999, 'paypal': 'foo2@bar.com'}
+                    'total_income': 9999, 'paypal': 'foo2@bar.com',
+                    'charitableActivity': 0, 'fundraising': 0, 'admin': 0}
         account2 = {'username': 'ming2', 'password': '123',
                     'description': 'cccc', 'paypal': 'testing'}
         charity3 = {'username': 'ming3', 'id': 4, 'name': 'foo', 'register_id': 4, 'type': 'AN',
                     'description': 'Some info3', 'target': 'E',
-                    'total_income': 1000000000, 'paypal': 'foo3@bar.com'}
+                    'total_income': 1000000000, 'paypal': 'foo3@bar.com',
+                    'charitableActivity': 0, 'fundraising': 0, 'admin': 0}
         account3 = {'username': 'ming3', 'password': '123',
                     'description': 'cccc', 'paypal': 'testing'}
         charity4 = {'username': 'ming4', 'id': 5, 'name': 'boo', 'register_id': 5, 'type': 'E',
                     'description': 'Some info4', 'target': 'D',
-                    'total_income': 123456, 'paypal': 'foo4@bar.com'}
+                    'total_income': 123456, 'paypal': 'foo4@bar.com',
+                    'charitableActivity': 0, 'fundraising': 0, 'admin': 0}
         account4 = {'username': 'ming4', 'password': '123',
                     'description': 'cccc', 'paypal': 'testing'}
         self.charities = [charity, charity1, charity2, charity3, charity4]
