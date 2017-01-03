@@ -87,6 +87,5 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
           account = account.first()
         else:
           return Payment.objects.none()
-        data = Payment.objects.get(account_id=account.id, pk=payment)
-        charity = Charity.objects.get(pk=data.charity_id)
-        return makeHttpResponse({'charity': charity.name, 'amount': data.amount }, HTTP_200_OK)
+        data = Payment.objects.get(account=account, pk=payment)
+        return makeHttpResponse({'charity': data.charity.name, 'amount': data.amount }, HTTP_200_OK)

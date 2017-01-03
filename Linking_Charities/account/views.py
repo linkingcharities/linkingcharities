@@ -74,11 +74,11 @@ class AccountInfoView(APIView):
                 resp_payments = []
                 for payment in payments:
                     charity = Charity.objects.get(id=payment.charity_id)
-                    p = {'account_id': payment.account_id,
-                         'charity_id': payment.charity_id,
+                    p = {'account_id': payment.account.id,
+                         'charity_id': payment.charity.id,
                          'amount': payment.amount,
                          'currency': payment.currency,
-                         'date': payment.date,
+                         'date': str(payment.date),
                          'charity': charity.name
                          }
                     resp_payments.append(p)
