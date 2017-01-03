@@ -48,24 +48,34 @@ class MakePaymentAPIView(CreateAPIView):
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = ShowPaymentSerializer
+    serializer_class = PaymentSerializer
     http_method_names = ['get', 'post', 'head']
 
-    def get_queryset(self):
+    def get(self, request):
         queryset = Payment.objects.all()
         user = self.request.query_params.get('username', None)
         account = User.objects.filter(username=user)
         if account.exists():
           account = account.first()
         else:
-          return Payment.objects.none()
+          return makeHttpResponse([], status=HTTP_400_BAD_REQUEST)
         payment = self.request.query_params.get('payment', None)
+        return_data = None
         if payment is not None:
-          queryset = queryset.filter(account_id=account.id, pk=payment)
-          return queryset
+          return_data = queryset.filter(account_id=account.id, pk=payment)
         else:
-          return queryset.filter(account_id=account.id)
-        return Payment.objects.none()
+          return_data = queryset.filter(account_id=account.id)
+        ret = []
+        for payment in return_data:
+            ret.append({
+                        'account_id': payment.account_id,
+                        'paypal': payment.paypal,
+                        'charity_id': payment.charity_id,
+                        'date': str(payment.date),
+                        'amount': payment.amount,
+                        'currency': payment.currency
+                       })
+        return makeHttpResponse(ret, status=HTTP_200_OK)
 
     def post(self, request, format=None):
         data = request.data

@@ -31,6 +31,10 @@ class ListCreateCharities(generics.ListCreateAPIView):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,filters.SearchFilter,)
     filter_class = IncomeFilter
 
+    def get(self, request):
+        response = super(ListCreateCharities, self).get(self, request)
+        return makeHttpResponse(response.data, status=response.status_code)
+
     def post(self, request, format=None):
         data = request.data
         username = data.pop('username')
@@ -67,6 +71,9 @@ class ListCreateVolunteering(generics.ListCreateAPIView):
     serializer_class = VolunteeringSerializer
     filter_class = DateFilter
 
+    def post(self, request, format=None):
+        response = super(ListCreateVolunteering, self).post(request, format)
+        return makeHttpResponse(response.data, status=response.status_code)
 
 class updateCharity(APIView):
     permission_classes = [AllowAny]
@@ -87,3 +94,12 @@ class UpdateVolunteering(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowAny]
     queryset = Volunteering.objects.all()
     serializer_class = VolunteeringSerializer
+
+    def patch(self, request, pk):
+        data = request.data
+        vol = Volunteering.objects.get(pk=pk)
+        serializer = VolunteeringSerializer(vol, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return makeHttpResponse(serializer.data, status=HTTP_200_OK)
+        return makeHttpResponse(serializer.errors, status=HTTP_400_BAD_REQUEST)
