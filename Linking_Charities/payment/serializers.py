@@ -22,3 +22,15 @@ class ShowPaymentSerializer(serializers.ModelSerializer):
         user = validated_data['username']
         payment = validated_data['payment']
         return Payment.objects.get(username=user, payment=payment)
+
+class PaymentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payment
+        fields = [ 'account_id',
+                   'paypal',
+                   'charity_id',
+                   'date',
+                   'amount',
+                   'currency'
+                  ]

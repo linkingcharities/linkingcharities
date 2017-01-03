@@ -15,6 +15,7 @@ from rest_framework.status import (
 from django.contrib.auth.models import User
 from django.db.models import Q
 from account.models import *
+from library import *
 
 class IncomeFilter(django_filters.rest_framework.FilterSet):
     min_income = django_filters.NumberFilter(name="total_income", lookup_expr='gte')
@@ -29,6 +30,10 @@ class ListCreateCharities(generics.ListCreateAPIView):
     serializer_class = CharitySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,filters.SearchFilter,)
     filter_class = IncomeFilter
+
+    def get(self, request):
+        response = super(ListCreateCharities, self).get(self, request)
+        return makeHttpResponse(response.data, status=response.status_code)
 
     def post(self, request, format=None):
         data = request.data
@@ -50,8 +55,8 @@ class ListCreateCharities(generics.ListCreateAPIView):
                 raise ValidationError("Charity account not provided.")
             charity_account.charity = Charity.objects.get(name=data['name'])
             charity_account.save()
-            return Response(new_data, status=HTTP_200_OK)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            return makeHttpResponse(new_data, status=HTTP_200_OK)
+        return makeHttpResponse(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 class DateFilter(django_filters.rest_framework.FilterSet):
     start_date = django_filters.DateFilter(name="start_date", lookup_expr='gte')
@@ -66,6 +71,9 @@ class ListCreateVolunteering(generics.ListCreateAPIView):
     serializer_class = VolunteeringSerializer
     filter_class = DateFilter
 
+    def post(self, request, format=None):
+        response = super(ListCreateVolunteering, self).post(request, format)
+        return makeHttpResponse(response.data, status=response.status_code)
 
 class updateCharity(APIView):
     permission_classes = [AllowAny]
@@ -79,10 +87,19 @@ class updateCharity(APIView):
         serializer = CharitySerializer(charity, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=HTTP_200_OK)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            return makeHttpResponse(serializer.data, status=HTTP_200_OK)
+        return makeHttpResponse(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 class UpdateVolunteering(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowAny]
     queryset = Volunteering.objects.all()
     serializer_class = VolunteeringSerializer
+
+    def patch(self, request, pk):
+        data = request.data
+        vol = Volunteering.objects.get(pk=pk)
+        serializer = VolunteeringSerializer(vol, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return makeHttpResponse(serializer.data, status=HTTP_200_OK)
+        return makeHttpResponse(serializer.errors, status=HTTP_400_BAD_REQUEST)
