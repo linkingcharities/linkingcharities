@@ -81,7 +81,7 @@ class PaymentTestCase(TestCase):
                , 'business': self.charity.paypal
                , 'charity_id': self.charity.id
                , 'mc_currency': 'USD'
-               , 'payment_gross': '12' }
+               , 'mc_gross': '12' }
         
         request = self.client.post('/api/make_payment', data, format='json')
         
