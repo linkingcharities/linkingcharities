@@ -5,5 +5,5 @@ cd /var/www/linkingcharities
 source venv/bin/activate
 cd Linking_Charities
 ./manage.py migrate
-./manage.py runsslserver 0.0.0.0:8000
+./manage.py runserver 0.0.0.0:8000
 deactivate

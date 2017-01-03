@@ -82,6 +82,24 @@ class CharityUpdateTest(APITestCase):
             account=account).charity.paypal, 'changed')
         print("Charity update passed.")
 
+class VolunteeringUpdateTest(APITestCase):
+    
+    def setUp(self):
+        Charity.objects.create(
+            name="testing1",
+            description="helping children",
+            register_id = 124,
+            paypal = "paypal1")
+        self.vol = Volunteering.objects.create(name="newvol",
+                                 charity=Charity.objects.get(register_id=124),                                    url="www.google.com")
+    
+    def testUpdateVolunteering(self):
+        self.client.patch('/api/volunteering?pk=' + str(self.vol.id), 
+                           {'name':'brandnewvol'}, format='json')
+        self.assertEqual(Volunteering.objects.get(pk=self.vol.id).name, 'brandnewvol')
+     
+        print("Volunteering update passed.")
+
 
 class VolunteeringUpdateTestCase(APITestCase):
 
