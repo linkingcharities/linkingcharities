@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^api/show_payment', ShowPaymentAPIView.as_view(), name='see_payment'),
     url(r'^api/make_payment', MakePaymentAPIView.as_view(), name='make_payment'),
     url(r'^api/volunteering$', ListCreateVolunteering.as_view(), name='list_volunteering'),
-    url(r'^api/volunteering/(?P<pk>[0-9]+)/$', UpdateVolunteering.as_view(), name='update_volunteering')
+    url(r'^api/volunteering/(?P<pk>[0-9]+)$', UpdateVolunteering.as_view(), name='update_volunteering')
 ]
 
 if settings.DEBUG:
