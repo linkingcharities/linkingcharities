@@ -156,9 +156,11 @@ TESTING = (len(sys.argv) > 1 and sys.argv[1] == 'test')
 if not TESTING:
     try:
         from local import *
+        TESTING = True
         print('testing')
     except ImportError as e:
         print('production')
+        TESTING = False
         # HTTPS?
         SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
         SECURE_SSL_REDIRECT = True
