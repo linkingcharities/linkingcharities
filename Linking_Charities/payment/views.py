@@ -29,10 +29,16 @@ class MakePaymentAPIView(CreateAPIView):
 
     def post(self, request, format=None):
         data = request.data
+        print(request)
         paypal = data['business']
         charity = Charity.objects.get(paypal=paypal)
         charity.donations = charity.donations + int(float(data['mc_gross']))
         charity.save()
+        if data['item_name'] == 'donation':
+            domain = request.get_host()
+            domain = domain[:-5]
+            #return redirect('http://' + domain + '/charities/')
+            return redirect("http://0.0.0.0:8080/charities/")
         user = User.objects.get(pk=data['item_name'])
         payment = {
                     'account': user,
@@ -42,8 +48,6 @@ class MakePaymentAPIView(CreateAPIView):
                     'currency': data['mc_currency']
                    }
         p = Payment.objects.create(**payment)
-        domain = request.get_host()
-        domain = domain[:-5]
         #return redirect('http://' + domain + '/thank-you/' + str(p.id))
         return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
 
