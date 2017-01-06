@@ -20,6 +20,7 @@ from django.core import serializers
 from django.contrib.auth.models import User
 from django.db.models.functions import TruncYear
 from library import *
+from django.conf import settings
 
 
 class MakePaymentAPIView(CreateAPIView):
@@ -34,11 +35,14 @@ class MakePaymentAPIView(CreateAPIView):
         charity = Charity.objects.get(paypal=paypal)
         charity.donations = charity.donations + int(float(data['mc_gross']))
         charity.save()
-        if data['item_name'] == 'donation':
+
+        if settings.TESTING:
+            domain = '0.0.0.0:8080'
+        else:
             domain = request.get_host()
             domain = domain[:-5]
-            #return redirect('http://' + domain + '/charities/')
-            return redirect("http://0.0.0.0:8080/charities/")
+        if data['item_name'] == 'donation':
+            return redirect('http://' + domain + '/charities/')
         user = User.objects.get(pk=data['item_name'])
         payment = {
                     'account': user,
@@ -48,8 +52,7 @@ class MakePaymentAPIView(CreateAPIView):
                     'currency': data['mc_currency']
                    }
         p = Payment.objects.create(**payment)
-        #return redirect('http://' + domain + '/thank-you/' + str(p.id))
-        return redirect("http://0.0.0.0:8080/thank-you/" + str(p.id))
+        return redirect('http://' + domain + '/thank-you/' + str(p.id))
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
