@@ -56,6 +56,7 @@ class ListCreateCharities(generics.ListCreateAPIView):
             charity_account.charity = Charity.objects.get(name=data['name'])
             charity_account.save()
             return makeHttpResponse(new_data, status=HTTP_200_OK)
+        User.object.delete(username=username)
         return makeHttpResponse(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 class DateFilter(django_filters.rest_framework.FilterSet):
