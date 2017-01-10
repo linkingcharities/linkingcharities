@@ -45,14 +45,15 @@ class MakePaymentAPIView(CreateAPIView):
             return redirect('http://' + domain + '/charities/')
         user = User.objects.get(pk=data['item_name'])
         payment = {
-                    'account': user,
-                    'paypal' : data['business'],
-                    'amount'  : float(data['mc_gross']),
-                    'charity' : charity,
-                    'currency': data['mc_currency']
-                   }
+            'account': user,
+            'paypal': data['business'],
+            'amount': float(data['mc_gross']),
+            'charity': charity,
+            'currency': data['mc_currency']
+        }
         p = Payment.objects.create(**payment)
         return redirect('http://' + domain + '/thank-you/' + str(p.id))
+
 
 class ShowPaymentAPIView(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
@@ -61,28 +62,28 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
 
     def get(self, request):
         queryset = Payment.objects.all()
-        user = self.request.query_params.get('username', None)
-        account = User.objects.filter(username=user)
+        account_id = self.request.query_params.get('account_id', None)
+        account = User.objects.filter(id=account_id)
         if account.exists():
-          account = account.first()
+            account = account.first()
         else:
-          return makeHttpResponse([], status=HTTP_400_BAD_REQUEST)
-        payment = self.request.query_params.get('payment', None)
+            return makeHttpResponse([], status=HTTP_400_BAD_REQUEST)
+        charity = self.request.query_params.get('charity', None)
         return_data = None
-        if payment is not None:
-          return_data = queryset.filter(account_id=account.id, pk=payment)
+        if charity is not None:
+            return_data = queryset.filter(charity_id=account_id)
         else:
-          return_data = queryset.filter(account_id=account.id)
+            return_data = queryset.filter(account_id=account.id)
         ret = []
         for payment in return_data:
             ret.append({
-                        'account_id': payment.account.id,
-                        'paypal': payment.paypal,
-                        'charity_id': payment.charity.id,
-                        'date': str(payment.date),
-                        'amount': payment.amount,
-                        'currency': payment.currency
-                       })
+                'account_id': payment.account.id,
+                'paypal': payment.paypal,
+                'charity_id': payment.charity.id,
+                'date': str(payment.date),
+                'amount': payment.amount,
+                'currency': payment.currency
+            })
         return makeHttpResponse(ret, status=HTTP_200_OK)
 
     def post(self, request, format=None):
@@ -91,8 +92,8 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
         payment = data['payment']
         account = User.objects.filter(username=user)
         if account.exists():
-          account = account.first()
+            account = account.first()
         else:
-          return Payment.objects.none()
+            return Payment.objects.none()
         data = Payment.objects.get(account=account, pk=payment)
-        return makeHttpResponse({'charity': data.charity.name, 'amount': data.amount }, HTTP_200_OK)
+        return makeHttpResponse({'charity': data.charity.name, 'amount': data.amount}, HTTP_200_OK)
