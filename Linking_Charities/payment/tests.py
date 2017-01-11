@@ -30,11 +30,11 @@ class PaymentTestCase(TestCase):
         return
 
     def testGetPaymentAPIWithUser(self):
-        
+
         response = self.client.get('/api/show_payment'
                                   , { 'username' : 'ming', 'payment': '1' }
                                   , format='json')
-        
+
         returnData = json.loads(response.content.decode())
         self.assertEquals(len(returnData),1)
         entry = returnData[0]
@@ -44,11 +44,11 @@ class PaymentTestCase(TestCase):
         self.assertEquals(entry['currency'], 'USD')
         self.assertEquals(entry['amount'], 1)
         self.assertEquals(dateparse.parse_datetime(entry['date']), self.time)
-        
+
         print("Get payment API passed.")
 
     def testGetPaymentAPICanGetMultiplePayments(self):
-        
+
         otherCharity = Charity.objects.create(name = 'someothercharity@gmail.com', register_id = 12345,
                    type = 'E',
                    description = 'testing get multiple payments', target = 'C',
@@ -66,7 +66,7 @@ class PaymentTestCase(TestCase):
                          , charity_id=otherCharity.id
                          , currency='USD'
                          , date=timezone.now())
-        
+
         response = self.client.get('/api/show_payment/?username=ming'
                                    , {}
                                    , format='json')
@@ -82,9 +82,9 @@ class PaymentTestCase(TestCase):
                , 'charity_id': self.charity.id
                , 'mc_currency': 'USD'
                , 'mc_gross': '12' }
-        
+
         request = self.client.post('/api/make_payment', data, format='json')
-        
+
         checkRequest = self.client.get('/api/show_payment/?username=make_payment'
                                       , {}
                                       , format='json')

@@ -63,17 +63,21 @@ class ShowPaymentAPIView(generics.ListCreateAPIView):
     def get(self, request):
         queryset = Payment.objects.all()
         account_id = self.request.query_params.get('account_id', None)
-        account = User.objects.filter(id=account_id)
-        if account.exists():
-            account = account.first()
-        else:
-            return makeHttpResponse([], status=HTTP_400_BAD_REQUEST)
-        charity = self.request.query_params.get('charity', None)
+        is_charity = self.request.query_params.get('charity', None)
         return_data = None
-        if charity is not None:
+
+        if is_charity:
+            charity = Charity.objects.filter(id=account_id)
+            if not charity.exists():
+                return makeHttpResponse([], status=HTTP_400_BAD_REQUEST)
             return_data = queryset.filter(charity_id=account_id)
         else:
+            account = User.objects.filter(id=account_id)
+            if not account.exists():
+                return makeHttpResponse([], status=HTTP_400_BAD_REQUEST)
+
             return_data = queryset.filter(account_id=account.id)
+
         ret = []
         for payment in return_data:
             ret.append({
