@@ -30,7 +30,6 @@ class MakePaymentAPIView(CreateAPIView):
 
     def post(self, request, format=None):
         data = request.data
-        print(request)
         paypal = data['business']
         charity = Charity.objects.get(paypal=paypal)
         charity.donations = charity.donations + int(float(data['mc_gross']))
